@@ -1,0 +1,72 @@
+{{set . "title" "Index"}}
+{{template "header.html" .}}
+
+
+<div class="header" id="content">
+  <div class="container">
+    <h1>
+      GPU Programming Web Environment
+      <!-- <small class="text-danger">Beta</small> -->
+    </h1>
+    <div class="panel panel-primary">
+      <div class="panel-body">
+        {{ if .notices }}
+        <br/>
+        {{ end }}
+        {{ range .notices }}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span class="glyphicon glyphicon-bullhorn"></span>
+            {{ raw .Text }}
+            <small class="text-muted">(posted <abbr class="timeago" title="{{rfc3339 .Time }}">
+              {{rfc3339 .Time }}
+            </abbr>)</small>
+          </div>
+        {{ end }}
+        {{ if .notices }}
+        <hr/>
+        {{ end }}
+
+        <p class="lead">
+          This site accompanies the Coursera site for
+          the <a href="https://class.coursera.org/hetero-002">Heterogeneous Parallel Programming</a> course
+          offered though Coursera. The site is the place where
+          all the programming assignments will be developed
+          and submitted. To get started, you first need
+          <a href="/signup">sign up</a> for an account.
+          You should <a href="/coursera/connect">connect</a>
+          your account with Coursera's after signing up.
+        </p>
+        <hr/>
+        <p>
+          <div class="row">
+            <a href="/help">
+              <div class="col-md-3 text-center btn btn-lg">
+                Tutorial
+              </div>
+            </a>
+            {{ if not .user }}
+              <a href="/login">
+                <div class="col-md-4 text-center btn btn-lg">Login</div>
+              </a>
+            {{ else if eq .user.Reserved1 "" }}
+              <a href="/coursera/connect">
+                <div class="col-md-4 text-center btn btn-lg">Connect Account to Coursera</div>
+              </a>
+            {{ else }}
+              <a href="/logout">
+                <div class="col-md-4 text-center btn btn-lg">Logout</div>
+              </a>
+            {{ end }}
+            <a href="/mps">
+               <div class="col-md-4 text-center btn btn-lg">Machine Problems</div>
+            </a>
+          </div>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{template "footer.html" .}}

@@ -1,0 +1,39 @@
+{{set . "title" "Login"}}
+{{template "header.html" .}}
+
+
+<div class="container">
+  <h1>
+    Account Login
+  </h1>
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <form class="form-horizontal container" action="/login" method="post">
+
+        <div class="form-group">
+          <label for="inputUserName" class="col-md-2 control-label">User Name:</label>
+          <div class="col-md-10">
+            <input type="inputUserName" class="form-control" name="userName" id="user_name" placeholder="User Name">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="password" class="col-md-2 control-label">Password:</label>
+          <div class="col-md-10">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-md-offset-11 col-md-1">
+            <button type="submit" class="btn btn-lg btn-danger">
+              &nbsp; Login
+            </button>
+          </div>
+       </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{{template "footer.html" .}}

@@ -1,0 +1,146 @@
+
+
+<header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        {{ if .user }}
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        {{ end }}
+      </button>
+      <a href="/" class="navbar-brand">
+        {{ if not .worker_alive }}
+            <small>
+              <span class="glyphicon glyphicon-fire text-danger"></span>
+            </small>
+        {{ end }}
+        WebGPU
+        <!-- <small class="text-small text-danger">Beta</small> -->
+      </a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav navbar-left">
+        <!--<li class="nav-index">
+          <a href="/">Index</a>
+        </li> -->
+        <li class="nav-machineproblems dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Machine Problems <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/mp/0">Device Query</a></li>
+            <li><a href="/mp/1">Vector Addition</a></li>
+            <li><a href="/mp/2">Basic Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/3">Tiled Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/6">Image Convolution</a></li>
+            <li><a href="/mp/4">List Reduction</a></li>
+            <li><a href="/mp/5">List Scan</a></li>
+            <li><a href="/mp/11">Histograms</a></li>
+            <li><a href="/mp/12">Vector Addition with Streams</a></li>
+            <li><a href="/mp/7">Vector Addition (OpenCL)</a></li>
+            <li><a href="/mp/8" class="hidden">Tiled Matrix-Matrix Multiplication (C++AMP)</a></li>
+            <li><a href="/mp/9" class="hidden">Tiled Matrix-Matrix Multiplication (OpenACC)</a></li>
+          </ul>
+        </li>
+        <li class="nav-attempts dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Attempts <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/mp/0/attempts">Device Query</a></li>
+            <li><a href="/mp/1/attempts">Vector Addition</a></li>
+            <li><a href="/mp/2/attempts">Basic Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/3/attempts">Tiled Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/6/attempts">Image Convolution</a></li>
+            <li><a href="/mp/4/attempts">List Reduction</a></li>
+            <li><a href="/mp/5/attempts">List Scan</a></li>
+            <li><a href="/mp/11/attempts">Histogram</a></li>
+            <li><a href="/mp/12/attempts">Vector Addition with Streams</a></li>
+            <li><a href="/mp/7/attempts">Vector Addition (OpenCL)</a></li>
+            <li><a href="/mp/8/attempts" class="hidden">Tiled Matrix-Matrix Multiplication (C++AMP)</a></li>
+            <li><a href="/mp/9/attempts" class="hidden">Tiled Matrix-Matrix Multiplication (OpenACC)</a></li>
+          </ul>
+        </li>
+        <li class="nav-peerreview dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Peer Review <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/mp/0/peerreview">Device Query</a></li>
+            <li><a href="/mp/1/peerreview">Vector Addition</a></li>
+            <li><a href="/mp/2/peerreview">Basic Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/3/peerreview">Tiled Matrix-Matrix Multiplication</a></li>
+            <li><a href="/mp/6/peerreview">Image Convolution</a></li>
+            <li><a href="/mp/4/peerreview">List Reduction</a></li>
+            <li><a href="/mp/5/peerreview">List Scan</a></li>
+            <li><a href="/mp/11/peerreview">Histogram</a></li>
+            <li><a href="/mp/12/peerreview">Vector Addition with Streams</a></li>
+            <li><a href="/mp/7/peerreview">Vector Addition (OpenCL)</a></li>
+            <li><a href="/mp/8/peerreview" class="hidden">Tiled Matrix-Matrix Multiplication (C++AMP)</a></li>
+            <li><a href="/mp/9/peerreview" class="hidden">Tiled Matrix-Matrix Multiplication (OpenACC)</a></li>
+          </ul>
+        </li>
+        <li class="nav-grades dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Grades <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/grades/0">Device Query</a></li>
+            <li><a href="/grades/1">Vector Addition</a></li>
+            <li><a href="/grades/2">Basic Matrix-Matrix Multiplication</a></li>
+            <li><a href="/grades/3">Tiled Matrix-Matrix Multiplication</a></li>
+            <li><a href="/grades/6">Image Convolution</a></li>
+            <li><a href="/grades/4">List Reduction</a></li>
+            <li><a href="/grades/5">List Scan</a></li>
+            <li><a href="/grades/11">Histogram</a></li>
+            <li><a href="/grades/12">Vector Addition with Streams</a></li>
+            <li><a href="/grades/7">Vector Addition (OpenCL)</a></li>
+            <li><a href="/grades/8" class="hidden">Tiled Matrix-Matrix Multiplication (C++AMP)</a></li>
+            <li><a href="/grades/9" class="hidden">Tiled Matrix-Matrix Multiplication (OpenACC)</a></li>
+          </ul>
+        </li>
+
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+        <li class="nav-machineproblems dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/help">Tutorial</a></li>
+              <li class="divider"></li>
+            <li><a href="http://github.com/abduld/libwb">Local Development</a></li>
+            <li><a href="http://github.com/abduld/wb/issues">Report Issues</a></li>
+              <li class="divider"></li>
+              <li><a href="/reset_password">Reset Password</a></li>
+          </ul>
+        </li>
+
+        {{ if .user }}
+          <li class="nav-machineproblems dropdown">
+            <a href="/#" class="dropdown-toggle" data-toggle="dropdown">Profile <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <!-- 
+              <li><a href="/profile/edit">Edit Profile</a></li>
+              <li><a href="/tasks">Tasks</a></li>
+              <li><a href="/coursera/connect">Connect to Coursera</a></li>
+
+              -->
+              <li class="divider"></li>
+              <li><a href="/logout">Logout {{ .user.UserName }}</a></li>
+            </ul>
+          </li>
+        {{ else }}
+          <li class="nav-login navbar-left">
+            <a href="/login">Login</a>
+          </li>
+          <li class="nav-login navbar-left">
+            <a href="/signup">Signup</a>
+          </li>
+        {{ end }}
+      </ul>
+    </nav>
+
+  </div>
+</header>

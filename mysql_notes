@@ -1,0 +1,75 @@
+
+# Select all grades with machine number `1`
+
+SELECT * FROM wb.grade INNER JOIN wb.machine_problem
+on wb.grade.machine_problem_id = wb.machine_problem.id where wb.machine_problem.number = 1;
+
+
+SELECT COUNT(*) FROM wb.grade
+INNER JOIN wb.machine_problem mp ON grade.machine_problem_id = mp.id
+INNER JOIN wb.user user ON mp.user_instance_id = user.id 
+WHERE mp.number = 0
+AND user.reserved1 = '';
+
+
+# Select all questions with machine number `1` the are missing an answer
+
+
+SELECT * FROM wb.question_item
+INNER JOIN wb.questions qs ON wb.question_item.questions_instance_id = qs.id 
+INNER JOIN wb.machine_problem mp ON qs.machine_problem_instance_id = mp.id
+WHERE mp.number = 1
+AND answer = 'Please fill answer.';
+
+
+# Export to csv file
+
+
+SELECT answer FROM wb.question_item
+INNER JOIN wb.questions qs ON wb.question_item.questions_instance_id = qs.id 
+INNER JOIN wb.machine_problem mp ON qs.machine_problem_instance_id = mp.id
+WHERE mp.number = 0
+AND answer != 'Please fill answer.'
+INTO OUTFILE '/tmp/result.csv'
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';
+
+
+# show peer review graph
+
+SELECT wb.peer_review.reviewer, user_instance_id FROM wb.peer_review
+INNER JOIN wb.grade grade on peer_review.grade_instance_id = grade.id
+INNER JOIN wb.machine_problem mp ON grade.machine_problem_id = mp.id
+WHERE mp.number = 6
+LIMIT 100000
+INTO OUTFILE '/tmp/result.csv'
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';
+
+
+SELECT user_instance_id FROM wb.grade
+INNER JOIN wb.machine_problem mp ON grade.machine_problem_id = mp.id
+WHERE mp.number = 6
+LIMIT 100000
+INTO OUTFILE '/tmp/result_grade.csv'
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';
+
+
+# Histogram of attempts
+
+SELECT DATE_FORMAT(updated, '%Y:%m:%d:%H'), COUNT(*) FROM wb.attempt GROUP BY DATE_FORMAT(updated, '%Y:%m:%d:%H');
+
+
+# select all grades that were not assigned correctly for mp 5
+SELECT mp.user_instance_id, MAX(wb.grade.id), mp.id, wb.grade.code_score, wb.grade.code_percentage FROM wb.grade
+inner join machine_problem mp on mp.id = wb.grade.machine_problem_id
+where mp.number = 5 and code_score = 80 and code_percentage < 1
+group by mp.id desc limit 10000;
+
+or...
+
+SELECT user.reserved1 FROM wb.grade
+inner join machine_problem mp on mp.id = wb.grade.machine_problem_id
+inner join user user on user.id = mp.user_instance_id
+where mp.number = 5 and code_score = 80 and code_percentage < 1
+group by mp.id desc
+INTO OUTFILE '/tmp/result.csv'
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"';

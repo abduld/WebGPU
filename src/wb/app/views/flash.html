@@ -1,0 +1,30 @@
+{{if .flash.success}}
+<div class="container">
+	<div class="alert alert-success alert-dismissable">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	  <p>{{.flash.success}}</p>
+	</div>
+</div>
+{{end}}
+
+{{if or .errors .flash.error}}
+<div class="container">
+	<div class="alert alert-danger alert-dismissable">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	  {{if .flash.error}}
+	  	<p>
+	  		<strong>Error: </strong> {{.flash.error}}
+	  	</p>
+	  {{ end }}
+	  {{if .errors }}
+	  	<div class="container">
+			<ul>
+				{{range .errors}}
+					<li>{{.}}</li>
+				{{end}}
+			</ul>
+		</div>
+	  {{end}}
+	</div>
+</div>
+{{end}}

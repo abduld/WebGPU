@@ -1,0 +1,45 @@
+{{set . "title" "Program Diff"}}
+{{append . "moreStyles" "addon/merge/merge.css" }}
+{{append . "moreScripts" "addon/merge/dep/diff_match_patch.js" }}
+{{append . "moreScripts" "addon/merge/merge.js" }}
+{{append . "moreScripts" "js/diff.js" }}
+{{template "header.html" .}}
+
+
+<div class="container">
+  <h1>
+    Program Diff 
+  </h1>
+  <div class="panel panel-info">
+    <div class="panel-body">
+    	<table class="table table-striped">
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<div class="codemirror">
+							<div id="diff-view"></div>
+							<span id="program-value" style="display: none;"> {{ raw .program1.Text }} </span>
+							<span id="program-orig" style="display: none;"> {{ raw .program2.Text }} </span>
+						</div>
+					</td>
+				<tr>
+					<td>
+						Program Created: <abbr class="timeago" title="{{ rfc3339 .program2.Created }}">
+							{{ .program2.Created }}
+						</abbr>
+					</td>
+					<td>
+						Program Created: <abbr class="timeago" title="{{ rfc3339 .program2.Created }}">
+							{{ .program2.Created }}
+						</abbr>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+    </div>
+  </div>
+</div>
+
+
+{{template "footer.html" .}}
+

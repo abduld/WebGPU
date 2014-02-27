@@ -1,0 +1,54 @@
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3>Questions</h3>
+	</div>
+	<div class="panel-body">
+		<div id="mp-questions">
+			{{ range .mp_questions }}
+			<div class="row">
+				<p class="lead"> <b class="question-number">{{ .Number }}</b>
+					.{{ .Question }}
+				</p>
+			</div>
+			{{ if .read_only }}
+			<div class="row">
+				<textarea disabled class="answer form-control" id="{{ .Number }}" placeholder="No Answer">{{ raw .Answer }}</textarea>
+			</div>
+			{{ else }}
+			<div class="row">
+				<textarea class="answer form-control" id="{{ .Number }}" rows="4">{{ raw .Answer }}</textarea>
+			</div>
+			<div class="row">
+				<div class="col-md-11"></div>
+				<button type="button" class="col-md-1 text-right btn btn-success btn-xs save-answer" id="{{ .Number }}">Save Answer</button>
+			</div>
+			{{ end }}
+			<hr />
+			{{ end }}
+			{{ if .peer_review }}
+			<div class="row">
+				<div class="form-group">
+					<label for="question-score" class="col-lg-2 control-label">Question Score:</label>
+					<div class="col-lg-10">
+						<select class="form-control question-score" name="question.score" >
+							<option id="1">Unsatisfactory</option>
+							<option id="2">Poor</option>
+							<option id="3">Average</option>
+							<option id="4">Good</option>
+							<option id="5">Excellent</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="question-comment" class="col-lg-2 control-label">Question Comment:</label>
+					<div class="col-lg-10">
+						<textarea class="form-control question-comment" name="question-comment" id="description" rows="4" placeholder="Enter your comments regarding the answers your peer has provided."></textarea>
+					</div>
+				</div>
+			</div>
+			{{ end }}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+	{{ if .mp }}
+	<div class="panel-heading">
+		<h3>Past Attempts</h3>
+	</div>
+	{{ end }}
+	<div class="panel-body">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Dataset</th>
+					<th>Program Snippet</th>
+					<th>Status</th>
+					<th>Submitted</th>
+				</tr>
+			</thead>
+			<tbody id="mp-attempts">
+				{{ range .mp_attempts }}
+				<tr class="{{.AlertTag}}">
+					<td>
+						<strong>
+							{{ if eq .DatasetId -2 }}
+								None
+							{{ else if eq .DatasetId -1 }}
+								All
+							{{ else }}
+								{{ .DatasetId }}
+							{{ end }}
+						</strong>
+					</td>
+					<td id="{{.Id}}">
+						<a href="/attempt/{{.Id}}">
+							{{ .Snippet }}
+								&hellip;
+						</a>
+					</td>
+					<td>{{ shorten .StatusMessage }}</td>
+					<td> <abbr class="timeago" title="{{ rfc3339 .Created }}">{{ .Created }}</abbr>
+					</td>
+				</tr>
+				{{ end }}
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,23 @@
+- Optional mp for OpenCL/C++AMP/OpenACC MatrixMultiply
+- Think more about peer review score
+
+= Tools:
+
+Get all deadlines:
+
+files = FileNames["config.json", 
+  "C:\\Users\\abduld\\Dropbox\\wbz\\src\\wb\\mp", Infinity]
+
+data = (FileNameTake[#, {-2}] -> Import[#]) & /@ files;
+
+s = Table[
+  {
+   "MP ", First[d], "  Code Submission Deadline --- ", 
+   DateString[DateList["coding_deadline" /. Last[d]]], "\n",
+   "MP ", First[d], "  Peer Review Deadline --- ", 
+   DateString[DateList["peer_review_deadline" /. Last[d]]], "\n"
+   },
+  {d, data}
+  ]
+
+StringJoin[s]

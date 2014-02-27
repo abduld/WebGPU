@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <!-- <meta http-equiv="cache-control" content="no-cache" /> -->
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    
+    <title>{{.title}}</title>
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-46846702-1', 'illinois.edu');
+        ga('send', 'pageview');
+    </script>
+    <!--[if lt IE 9]><script>
+    (function(f){
+    window.setTimeout =f(window.setTimeout);
+    window.setInterval =f(window.setInterval);
+    })(function(f){return function(c,t){
+    var a=[].slice.call(arguments,2);return f(function(){c.apply(this,a)},t)}
+    });
+    </script><![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/public/css/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="/public/theme/eclipse.css">
+    <link rel="stylesheet" type="text/css" href="/public/addon/hint/show-hint.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.theme.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/wb.css">
+    
+    <link rel="shortcut icon" type="image/ico" href="/public/img/favicon.ico">
+
+    <script src="/public/js/modernizr.2.7.1.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/jquery-2.0.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/underscore-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/jquery.timeago.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/bootstrap_growl.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/codemirror.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/addon/hint/show-hint.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/addon/edit/matchbrackets.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/clike-hint.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/bootbox.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/mode/clike/clike.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/spin.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/jquery.spin.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/pollymer.js" type="text/javascript" charset="utf-8"></script>
+    
+    
+    <script src="/public/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/js/help.js" type="text/javascript" charset="utf-8"></script>
+
+    {{range .moreStyles}}
+      <link rel="stylesheet" type="text/css" href="/public/{{.}}">
+    {{end}}
+    {{range .moreScripts}}
+      <script src="/public/{{.}}" type="text/javascript" charset="utf-8"></script>
+    {{end}}
+
+    <!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+
+  </head>
+  <body>
+    {{template "navbar.html" .}}
+    
+    {{template "flash.html" .}}
+
+    <br/>

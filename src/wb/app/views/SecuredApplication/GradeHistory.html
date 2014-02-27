@@ -1,0 +1,81 @@
+{{set . "title" "Grade History"}}
+{{template "header.html" .}}
+
+
+<div class="container">
+{{ range .grades }}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="row">
+				<h3 class="col-md-9">
+					Grade Summary
+					<a href="/grade/{{.Id}}">
+						<small class="text-muted">(View Grade)</small>
+					</a>
+				</h3>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+			<table class="table table-striped">
+				<tbody>
+					<tr>
+						<td>Updated:</td>
+						<td>
+							<abbr class="timeago" title="{{ rfc3339 .Updated }}">
+								{{ .Updated }}
+							</abbr>
+						</td>
+					</tr>
+					<tr>
+						<td>Coding Score:</td>
+						<td>
+							{{ .CodeScore }} 
+							out of 
+							{{ percentageToInt .CodePercentage }}
+							points
+						</td>
+					</tr>
+					{{ if gt .CourseraCodingGrade 0 }}
+					<tr>
+						<td>Coding Score on Coursera:</td>
+						<td>
+							{{ .CourseraCodingGrade }}
+							out of 
+							{{ percentageToInt .CodePercentage }}
+							points
+							<a href="#" class="force-submit-coursera-code-grade" id="{{.Id}}"><small class="text-muted">(force code score synchronization to Coursera)</small></a>
+						</td>
+					</tr>
+					{{ end }}
+					<tr>
+						<td>Peer Review Score:</td>
+						<td>
+							{{ .PeerReviewScore }}
+							out of 
+							{{ percentageToInt .PeerReviewPercentage }}
+							points
+						</td>
+					</tr>
+					{{ if gt .CourseraPeerReviewGrade 0 }}
+					<tr>
+						<td>Peer Review Score on Coursera:</td>
+						<td>
+							{{ .CourseraPeerReviewGrade }}
+							out of 
+							{{ percentageToInt .PeerReviewPercentage }}
+							points
+							<a href="#" class="force-submit-coursera-peer-grade" id="{{.Id}}"><small class="text-muted">(force peer review score synchronization to Coursera)</small></a>
+						</td>
+					</tr>
+					{{ end }}
+				</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+{{ end }}
+</div>
+
+{{template "footer.html" .}}
+

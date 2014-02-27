@@ -1,0 +1,279 @@
+
+{{template "header.html" .}}
+<div class="mp-id" id="{{.mp_config.Number}}"></div>
+{{ if .past_deadline }}
+<div class="container">
+	<h1>
+		{{.title}} Deadline has Passed
+	</h1>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+			<p class="lead">
+				The peer review deadline for {{.mp_config.Name}} has passed.
+			</p>
+			<hr/>
+		</div>
+	</div>
+</div>
+{{ else if .no_attempts }}
+<div class="container">
+	<h1>
+		Not attempts were found for {{.title}}
+	</h1>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+			<p class="lead">
+				The peer review process requires you to have attempted {{.mp_config.Name}}.
+			</p>
+			<hr/>
+		</div>
+	</div>
+</div>
+{{ else if .still_coding }}
+<div class="container">
+	<h1>
+		Coding Still in Progress
+	</h1>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+			<p class="lead">
+				The peer review process is not currently open for the {{ .mp_config.Name }} Machine Problem.
+				It would be open after the coding
+				deadline has been reached. The coding deadline for this assignment is
+				<abbr class="timeago" title="{{rfc3339 .mp_config.CodingDeadline }}">
+					{{rfc3339 .mp_config.CodingDeadline }}
+				</abbr>
+				.
+			</p>
+			<hr/>
+		</div>
+	</div>
+</div>
+{{ else }}
+<div class="container">
+	<div class="tab-container">
+		<ul id="tab-interface" class="nav nav-tabs">
+			{{ range .reviews }}
+				{{ if eq .Index 1 }}
+				<li class="active">
+					<a href="#review{{.Review.Id}}" class="review-tab" id="{{.Review.Id}}" data-toggle="tab">Peer {{.Index}}</a>
+				</li>
+				{{ else }}
+				<li>
+					<a href="#review{{.Review.Id}}" class="review-tab" id="{{.Review.Id}}" data-toggle="tab">Peer {{.Index}}</a>
+				</li>
+				{{ end }}
+			{{ end }}
+		</ul>
+		<div id="tab-content" class="tab-content">
+			{{ range .reviews }}
+			{{ if eq .Index 1 }}
+			<div class="tab-pane active" id="review{{.Review.Id}}">
+			{{ else }}
+			<div class="tab-pane" id="review{{.Review.Id}}">
+			{{ end }}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="row">
+							<h3 class="col-md-9">
+								User's Code
+							</h3>
+							{{ if eq .Index 3 }}
+							<div class="btn btn-lg peer-review-button submit-peer-review btn-danger col-md-3 text-right" data-style="expand-right">
+								Submit Peer Review
+							</div>
+							{{ end }}
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="codemirror">
+								<textarea class="readonly code-editor">{{ raw .Program.Text }}</textarea>
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="alert alert-info">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<div class="container">
+									<h3> Coding Peer Review Guidelines: </h3>
+									<hr/>
+									<ul>
+										<li> Do you think the user handled all the boundary cases? if not which cases do you think they missed. If unsure, then you can copy their program into your coding section and run it on the datasets. Comment on what changes are needed to make the program handle all boundary cases. </li>
+										<li> Did the user follow good programming practices? </li>
+										<ul>
+											<li> Comment on the programming style: is the code indented, are the variable names used clear, were there any points in their code that were unclear and needed a comment? </li>
+											<li> Did the user free all memory allocated? </li>
+											<li> Did the user properly handle errors? </li>
+										</ul>
+										<li> Are there other comments you'd like to share with the user? </li>
+										<li> Based on the above, give a grade to the program. </li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="container">
+							<div class="row">
+								<div class="form-group">
+									<label for="code-score" class="col-lg-2 control-label">
+										Code Assessment:
+									</label>
+									<div class="col-lg-10">
+										<select class="form-control code-score code-review-score" id="{{.Review.Id}}" name="code.score">
+												{{ if eq .Review.CodeReviewScore 1 }}
+												<option selected>
+												{{ else }}
+												<option id="1">
+												{{ end }}
+													Unsatisfactory
+												</option>
+												{{ if eq .Review.CodeReviewScore 2 }}
+												<option selected>
+												{{ else }}
+												<option>
+												{{ end }}
+													Poor
+												</option>
+												{{ if eq .Review.CodeReviewScore 3 }}
+												<option selected>
+												{{ else }}
+												<option>
+												{{ end }}
+													Average
+												</option>
+												{{ if eq .Review.CodeReviewScore 4 }}
+												<option selected>
+												{{ else }}
+												<option>
+												{{ end }}
+													Good
+												</option>
+												{{ if eq .Review.CodeReviewScore 5 }}
+												<option selected>
+												{{ else }}
+												<option>
+												{{ end }}
+													Excellent
+												</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label for="code-comment" class="col-lg-2 control-label">
+										Code Comment:
+									</label>
+									<div class="col-lg-10">
+										<textarea class="form-control code-comment code-review-comment" id="{{.Review.Id}}" name="code-comment"
+										rows="4" placeholder="Enter comments you'd like to share with the programmer about his/her questions.">{{ raw .Review.CodeReviewComment }}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br/>
+				</div>
+				<hr />
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3>
+							User's Questions
+						</h3>
+					</div>
+					<div class="panel-body">
+						<div id="mp-questions">
+							{{ range .QuestionItems }}
+							<div class="row">
+								<p class="lead">
+									<b class="question-number">
+										{{ .Number }}
+									</b>
+									.{{ .QuestionText }}
+								</p>
+							</div>
+							<div class="row">
+								<textarea disabled class="answer form-control" id="{{ .Number }}">{{ raw .Answer }}</textarea>
+							</div>
+							<br />
+							{{ end }}
+							<div class="row">
+								<div class="alert alert-info">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+									<div class="container">
+										<h3> Questions Peer Review Guidelines: </h3>
+										<hr/>
+										<ul>
+											<li> Since some of the questions reference the program implementation, make sure to read the program before starting to review the questions. </li>
+											<li> Read through the questions and answers commenting on whether an answer is correct or not. If not sure, ask about the question on the forums. </li>
+											<li> Are there other comments you'd like to share with the user? </li>
+											<li> Based on the above, give a grade to the answers. </li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label for="question-score" class="col-lg-2 control-label">
+										Questions Assessment:
+									</label>
+									<div class="col-lg-10">
+										<select class="form-control question-score question-review-score" id="{{.Review.Id}}" name="question.score">
+											{{ if eq .Review.QuestionReviewScore 1 }}
+											<option selected>
+											{{ else }}
+											<option>
+											{{ end }}
+												Unsatisfactory
+											</option>
+											{{ if eq .Review.QuestionReviewScore 2 }}
+											<option selected>
+											{{ else }}
+											<option>
+											{{ end }}
+												Poor
+											</option>
+											{{ if eq .Review.QuestionReviewScore 3 }}
+											<option selected>
+											{{ else }}
+											<option>
+											{{ end }}
+												Average
+											</option>
+											{{ if eq .Review.QuestionReviewScore 4 }}
+											<option selected>
+											{{ else }}
+											<option>
+											{{ end }}
+												Good
+											</option>
+											{{ if eq .Review.QuestionReviewScore 5 }}
+											<option selected>
+											{{ else }}
+											<option>
+											{{ end }}
+												Excellent
+											</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="question-comment" class="col-lg-2 control-label">
+										Questions Comment:
+									</label>
+									<div class="col-lg-10">
+										<textarea class="form-control question-comment question-review-comment" id="{{.Review.Id}}" name="question-comment" rows="4" placeholder="Enter comments you'd like to share with the programmer about his/her code.">{{ raw .Review.QuestionReviewComment }}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ end }}
+		</div>
+	</div>
+</div>
+{{ end }}
+
+{{template "footer.html" .}}

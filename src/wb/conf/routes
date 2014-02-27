@@ -1,0 +1,101 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+GET     /                                                           PublicApplication.Index
+GET     /index.html                                                 PublicApplication.Index
+GET     /help                                                       PublicApplication.Help
+POST    /log_page_view                                              PublicApplication.LogPageView
+POST    /log_message                                                PublicApplication.LogMessage
+GET     /share/:runId                                               PublicApplication.SharedAttempt
+
+# Daemon
+#
+POST     /compile                                                   WorkerApplication.Compile
+GET      /data/:runIdString                                         WorkerApplication.GetData
+
+# Master
+#
+GET     /workers                                                    MasterApplication.Workers
+POST    /worker/register                                            MasterApplication.WorkerRegister
+POST    /attempt                                                    MasterApplication.Attempt
+
+# Coursera
+#
+GET     /coursera/authenticate                                      CourseraApplication.Authenticate
+GET     /coursera/connect                                           CourseraApplication.Connect
+GET     /coursera/post_grade/:gradeIdString/:toPostString/:forceString CourseraApplication.PostGrade
+POST    /coursera/post_grade/:gradeIdString/:toPostString/:forceString CourseraApplication.PostGrade
+
+# Server
+#
+
+GET     /login                                                      PublicApplication.Login
+POST    /login                                                      PublicApplication.CheckLogin
+GET		/reset_password												PublicApplication.ResetPasswordForm
+POST	/reset_password												PublicApplication.ResetPassword
+GET		/update_password/:userIdString/:secret						PublicApplication.UpdatePasswordForm
+POST	/update_password/:userIdString/:secret						PublicApplication.UpdatePassword
+GET     /signup                                                     PublicApplication.SignUp
+POST    /signup                                                     PublicApplication.CreateUser
+POST    /user_name_exists                                           PublicApplication.UserNameExists
+                    
+GET     /logout                                                     SecuredApplication.Logout
+
+
+GET     /grades/:mpNumString                                        SecuredApplication.ShowGrade
+GET     /grade/:gradeIdString                                       SecuredApplication.Grade
+GET		  /grade/history/:mpNumString									                SecuredApplication.GradeHistory
+
+GET		  /question/history/:mpNumString/:questionNumString			      SecuredApplication.QuestionHistory
+
+GET     /mps                                                        SecuredApplication.MachineProblems
+GET     /mp/:mpNumString                                            SecuredApplication.MachineProblem
+POST    /mp/:mpNumString/submit                                     SecuredApplication.SubmitProgram
+POST    /mp/:mpNumString/save                                       SecuredApplication.SaveProgram
+GET     /mp/:mpNumString/revert                                     SecuredApplication.RevertProgram
+GET     /mp/:mpNumString/program                                    SecuredApplication.RecentProgram
+GET     /mp/:mpNumString/programs/:countString                      SecuredApplication.RecentPrograms
+POST    /mp/:mpNumString/question/save/:questionNumString           SecuredApplication.SaveQuestion
+GET     /program/:programIdString1/:programIdString2                SecuredApplication.ProgramDiff
+GET     /program/:programIdString                                   SecuredApplication.Program
+GET     /mp/:mpNumString/attempts                                   SecuredApplication.Attempts
+GET     /mp/:mpNumString/peerreview                                 SecuredApplication.PeerReview
+POST    /peerreview/:mpNumString          							SecuredApplication.UpdatePeerReview
+GET     /attempt/:attemptIdString                                   SecuredApplication.Attempt
+POST    /attempt/:attemptIdString/grade                             SecuredApplication.ComputeGrade
+GET     /attempt/:attemptIdString/graderun/:runIdString             SecuredApplication.GradeRunInformation
+GET     /profile                                                    SecuredApplication.UserProfile
+GET     /mp/:mpNumString/attemptrun/:runIdString                    SecuredApplication.AttemptRunInformation
+
+GET     /worker_messages                                            SecuredApplication.WorkerMessages
+GET     /worker_status                                              SecuredApplication.WorkerStatus
+                    
+GET     /dataset/:mpNumString/:name                                 SecuredApplication.MachineProblemDatasetDownload
+
+GET		/reset_cache 												SecuredApplication.ResetCache
+
+# Ignore favicon requests
+GET     /favicon.ico                                                404
+GET     /404                                                        404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/*filepath                                           Static.Serve("public")
+GET     /help/imgs/*filepath                                        Static.Serve("mp/help/imgs")
+GET     /mp/11/imgs/*filepath                                            Static.Serve("mp/11/imgs")
+
+
+# Dashboard
+GET		/dashboard 													Dashboard.ViewDashboard
+WS      /websocket/dashboard                                        Dashboard.DashboardSocket
+
+
+# Catch all
+# *       /{controller}/{action}                                    {controller}.{action}
+
+# tests
+# module:testrunner
+
+# profile
+module:pprof
+
