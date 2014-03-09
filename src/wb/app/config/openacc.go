@@ -6,16 +6,25 @@ import (
 
 var (
 	PGCCCompilerLocation string
+	PGCCCompiler string
 )
 
 func findPGCCDirectory() {
-
-	if dir, found := NestedRevelConfig.String("pgcc.directory"); found {
-		PGCCCompilerLocation = dir
-	} else if exe, err := findExe("pgcc"); err == nil {
-		PGCCCompilerLocation = exe
+	if comp, found := NestedRevelConfig.String("openacc.compiler"); found {
+		PGCCCompiler = comp
 	} else {
-		revel.WARN.Println("Cannot find PGCCCompilerLocation")
+		PGCCCompiler = "pgc++"
+	}
+	revel.TRACE.Println("PGCCCompiler = ", PGCCCompiler);
+	if dir, found := NestedRevelConfig.String("openacc.directory"); found {
+		PGCCCompilerLocation = dir
+		revel.INFO.Println("Found OpenACC compiler ... ", PGCCCompilerLocation, "/", PGCCCompiler)
+	} else {
+		var err error
+		PGCCCompilerLocation, err = findExe(PGCCCompiler)
+		if err == nil {
+			revel.INFO.Println("Found OpenACC compiler ... ", PGCCCompilerLocation, "/", PGCCCompiler)
+		}
 	}
 }
 

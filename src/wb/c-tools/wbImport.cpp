@@ -550,7 +550,7 @@ void *wbImport(const char *file, int *rows, int *columns) {
   return wbImport(file, rows, columns, "Real");
 }
 
-void *wbImport(const char *file, int *rows) {
+EXTERN_C void *wbImport(const char *file, int *rows) {
   return wbImport(file, rows, NULL, "Real");
 }
 

@@ -6,11 +6,24 @@ import (
 
 var (
 	CPPAMPCompilerLocation string
+	CPPAMPCompiler string
 )
 
 func findCPPAMPDirectory() {
-	revel.WARN.Println("Cannot find CPPAMPCompilerLocation")
-	// panic("Cannot find CPPAMPCompilerLocation")
+	if comp, found := NestedRevelConfig.String("openacc.compiler"); found {
+		CPPAMPCompiler = comp
+	} else {
+		CPPAMPCompiler = "pgcpp"
+	}
+	if dir, found := NestedRevelConfig.String("openacc.directory"); found {
+		CPPAMPCompilerLocation = dir
+	} else {
+		var err error
+		CPPAMPCompilerLocation, err = findExe(CPPAMPCompiler)
+		if err == nil {
+			revel.INFO.Println("Found OpenACC compiler ... ", CPPAMPCompilerLocation)
+		}
+	}
 }
 
 func InitCPPAMPConfig() {

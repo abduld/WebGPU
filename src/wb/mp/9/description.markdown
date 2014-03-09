@@ -4,10 +4,6 @@
 
 ## Objective
 
-Implement a tiled dense matrix multiplication routine using OpenACC.
+Implement a vector addition using OpenACC.
 
-## Prerequisites
 
-Before starting this lab, make sure that:
-
-* You have completed MP3 (the CUDA tiled Matrix-Matrix multiplication assignment)

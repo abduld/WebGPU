@@ -209,7 +209,7 @@ wbBool wbSolution(wbArg_t arg, void *data, int rows, int columns) {
   return res;
 }
 
-wbBool wbSolution(wbArg_t arg, void *data, int rows) {
+EXTERN_C wbBool wbSolution(wbArg_t arg, void *data, int rows) {
   return wbSolution(arg, data, rows, 1);
 }
 

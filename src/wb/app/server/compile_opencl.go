@@ -24,6 +24,7 @@ func MakeOpenCLCompileCommand(s *WorkerState) string {
 			" -DWB_USE_CUSTOM_MALLOC " +
 			" -DWB_USE_COURSERA " +
 			" -DWB_USE_CUDA " +
+			" -DWB_USE_OPENCL " +
 			" 2>&1\n"
 	default:
 		return "todo"

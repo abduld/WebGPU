@@ -1,11 +1,11 @@
 {
 	"language": "OpenACC",
-  "name": "OpenACC : Tiled Matrix Multiplication",
+  "name": "OpenACC : Vector Addition",
   "peer_review_score": 0.0,
 	"code_score": 1.0,
 	"compile_score": 0.0,
-	"coding_deadline": "2014-03-17T22:00:00Z",
-	"peer_review_deadline": "2014-03-20T22:00:00Z",
+	"coding_deadline": "2014-03-18T22:00:00Z",
+	"peer_review_deadline": "2014-03-21T22:00:00Z",
 	"data": [
 		{
 			"score": 0.2,
@@ -62,7 +62,7 @@
             "description": "Dataset 5"
 		}
 	],
-	"input_type": "matrix",
-	"output_type": "matrix",
+	"input_type": "vector",
+	"output_type": "vector",
 	"coursera_code_post_key": "FILLME"
 }

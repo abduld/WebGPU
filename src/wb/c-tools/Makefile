@@ -3,11 +3,11 @@
 ##########################################
 # INPUT
 ##########################################
-CXX=g++
+CXX=gcc
 DEFINES=-DWB_USE_CUDA
 DEFINES+=-DWB_USE_CUSTOM_MALLOC -DWB_USE_COURSERA
-CUDA_TOOLKIT_PATH=/scr/dakkak/toolkit12.10
-CXX_FLAGS=-fPIC -x c++ -O3 -I . -I $(CUDA_TOOLKIT_PATH)/include 
+CUDA_TOOLKIT_PATH=/scr/dakkak/usr/cuda
+CXX_FLAGS=-fPIC -x c++ -O3 -I . -I $(CUDA_TOOLKIT_PATH)/include  -static
 CXX_FLAGS+=-L $(HOME)/usr/lib -L $(HOME)/usr/cuda/lib -Wall 
 CXX_FLAGS+=-I$(HOME)/usr/cuda/include -I$(HOME)/usr/include 
 CXX_FLAGS+=-I/scr/dakkak/usr/cuda/include -L/scr/dakkak/usr/cuda/lib 
