@@ -1,0 +1,7 @@
+{
+    "questions": [
+        "How many floating operations are being performed, assume that multiplication & addition are seperate operations. Explain.",
+        "How many global memory reads are being performed by a single thread executing your kernel? Explain.",
+        "How many global memory writes are being performed by a single thread executing your kernel? Explain."
+    ]
+}

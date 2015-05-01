@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -15,39 +13,94 @@ import (
 	"wb/app/routes"
 	"wb/app/stats"
 
-	"github.com/abduld/oauth"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
+	"golang.org/x/oauth2"
 )
 
 type CourseraApplication struct {
 	PublicApplication
 }
 
-type CourseraIdentity struct {
-	Id           string `json:"id"`
-	FullName     string `json:"full_name"`
-	EmailAddress string `json:"email_address"`
-}
-
-type CourseraTrustedIdentity struct {
-	Id              string `json:"id"`
-	FullName        string `json:"full_name"`
-	SubtitlesAccess string `json:"subtitles_access"`
-}
-
-var CourseraConsumer *oauth.Consumer
+var OAuthEndPoint oauth2.Endpoint
 
 func InitCourseraController() {
-	CourseraConsumer = oauth.NewConsumer(
-		CourseraOAuthConsumerKey,
-		CourseraOAuthConsumerSecret,
-		oauth.ServiceProvider{
-			RequestTokenUrl:   CourseraRequestTokenAddress,
-			AccessTokenUrl:    CourseraAccessTokenAddress,
-			AuthorizeTokenUrl: CourseraAuthenticationAddress,
-		},
-	)
-	//CourseraConsumer.Debug(true)
+	OAuthEndPoint = oauth2.Endpoint{
+		AuthURL:  CourseraAuthTokenAddress,
+		TokenURL: CourseraTokenAddress,
+	}
+}
+
+var requestTokenCache map[int64]oauth2.Token = map[int64]oauth2.Token{}
+
+// See https://tech.coursera.org/app-platform/oauth2/
+func (c CourseraApplication) Authenticate() revel.Result {
+	var code string
+	var state string
+
+	user := c.connected()
+	if user.Id == 0 {
+		c.Flash.Error("Must log in before connecting user to coursera")
+		return c.Redirect(routes.PublicApplication.Login())
+	}
+
+	c.Params.Bind(&code, "code")
+	c.Params.Bind(&state, "state")
+
+	if user.RequestToken == nil {
+		revel.TRACE.Println(requestTokenCache[user.Id])
+		if val, ok := requestTokenCache[user.Id]; ok {
+			user.RequestToken = &val
+		}
+	}
+
+	if code == "" {
+
+		OAuthConfig := &oauth2.Config{
+			ClientID:    CourseraOAuthClientKey,
+			Scopes:      []string{"view_profile"},
+			Endpoint:    OAuthEndPoint,
+			RedirectURL: "http://www.webgpu.com/coursera/ltiview",
+		}
+		url := OAuthConfig.AuthCodeURL("CRF-WEBGPU", oauth2.AccessTypeOffline)
+		revel.ERROR.Println(url)
+		models.SetUserCourseraIdentity(user, user.RequestToken, "")
+		return c.Redirect(url)
+	}
+
+	return c.Redirect(routes.PublicApplication.Index())
+}
+
+func (c CourseraApplication) LTIViewAuthentication() revel.Result {
+	return c.Render()
+}
+
+func (c CourseraApplication) LTIAuthenticate() revel.Result {
+	var values string
+	var form string
+	var userid string
+
+	user := c.connected()
+	if user.Id == 0 {
+		c.Flash.Error("Must log in before connecting user to coursera")
+		return c.Redirect(routes.PublicApplication.Login())
+	}
+
+	c.Params.Bind(&values, "Values")
+	c.Params.Bind(&form, "Form")
+	c.Params.Bind(&userid, "user_id")
+
+	if userid == "" {
+		c.Flash.Error("Cannot get user identity from coursera!")
+		stats.Incr("User", "CourseraAuthenticationFailed")
+		return c.Redirect(routes.PublicApplication.Index())
+	}
+	revel.TRACE.Println("identity = ", userid)
+	stats.Log("User", "Coursera", "Connected to coursera with identity: "+userid)
+	models.SetUserCourseraCredentials(user, form, values, userid)
+
+	c.Flash.Success("Connected to coursera!")
+	return c.Redirect(routes.PublicApplication.Index())
+
 }
 
 func doPostCourseraGrade(user models.User, mp models.MachineProblem,
@@ -74,29 +127,16 @@ func doPostCourseraGrade(user models.User, mp models.MachineProblem,
 
 	conf, _ := ReadMachineProblemConfig(mp.Number)
 
-	getIdentity := func() (string, error) {
-		var idty CourseraIdentity
-		idtyStr := models.GetUserIdentity(user)
-		if idtyStr == "" {
-			return "", errors.New("Not connected to cousera")
-		}
-
-		if err := json.Unmarshal([]byte(idtyStr), &idty); err != nil {
-			return "", err
-		}
-
-		return idty.Id, nil
-	}
-
-	idty, err := getIdentity()
-	if err != nil {
-		return err
-	}
-
+	idty := models.GetUserIdentity(user)
+	// Post grade to coursera
 	postGrade := func(kind string, key string, score int64) error {
 		reason := ""
 		if kind == "code" {
 			reason = grade.Reasons
+		}
+
+		if key == "NONE" {
+			return errors.New("You are not graded on this MP")
 		}
 
 		t := time.Now().Unix()
@@ -105,15 +145,17 @@ func doPostCourseraGrade(user models.User, mp models.MachineProblem,
 		} else if kind == "peer" && time.Since(conf.PeerReviewDeadline).Hours() > conf.GracePeriod {
 			t = conf.PeerReviewDeadline.UTC().Unix()
 		}
+		vals := url.Values{
+			"api_key":             {CourseraGradeAPIKey},
+			"user_id":             {idty},
+			"score":               {strconv.Itoa(int(score))},
+			"assignment_part_sid": {key},
+			"feedback":            {reason},
+			"submission_time":     {fmt.Sprint(t)},
+		}
 		resp, err := http.PostForm(CourseraGradeURL,
-			url.Values{
-				"api_key":             {CourseraGradeAPIKey},
-				"user_id":             {idty},
-				"score":               {strconv.Itoa(int(score))},
-				"assignment_part_sid": {key},
-				"feedback":            {reason},
-				"submission_time":     {fmt.Sprint(t)},
-			})
+			vals)
+		revel.TRACE.Println("Posting grade for ", idty, "  ", CourseraGradeURL, " with key ", key, vals)
 		if err != nil {
 			return err
 		}
@@ -124,13 +166,14 @@ func doPostCourseraGrade(user models.User, mp models.MachineProblem,
 
 	if toPostPeer && grade.PeerReviewScore != 0 && (forceQ == true || grade.PeerReviewScore >= grade.CourseraPeerReviewGrade) {
 		if err := postGrade("peer", conf.CourseraPeerReviewPostKey, grade.PeerReviewScore); err != nil {
-			return errors.New("Was not able to post coursera grade. Make sure you are connected to coursera first.")
+			revel.ERROR.Println(err)
+			return errors.New("Was not able to post coursera grade. Make sure you are connected to coursera first and/or this MP is graded.")
 		}
 	}
 
 	if toPostCode && grade.CodeScore != 0 && (forceQ == true || grade.CodeScore >= grade.CourseraCodingGrade) {
 		if err := postGrade("code", conf.CourseraCodePostKey, grade.CodeScore); err != nil {
-			return errors.New("Was not able to post coursera grade. Make sure you are connected to coursera first.")
+			return errors.New("Was not able to post coursera grade. Make sure you are connected to coursera first and/or this MP is graded.")
 		}
 	}
 	stats.Incr("User", "CourseraPostGrade")
@@ -225,69 +268,4 @@ func (c CourseraApplication) PostGrade(gradeIdString string, toPostString string
 
 func (c CourseraApplication) Connect() revel.Result {
 	return c.Render()
-}
-
-var requestTokenCache map[int64]oauth.RequestToken = map[int64]oauth.RequestToken{}
-
-// See https://instructor-support.desk.com/customer/portal/articles/711559-third-party-authorization-with-oauth
-func (c CourseraApplication) Authenticate() revel.Result {
-	var oauthToken string
-	var oauthVerifier string
-
-	user := c.connected()
-	if user.Id == 0 {
-		c.Flash.Error("Must log in before connecting user to coursera")
-		return c.Redirect(routes.PublicApplication.Login())
-	}
-
-	c.Params.Bind(&oauthToken, "oauth_token")
-	c.Params.Bind(&oauthVerifier, "oauth_verifier")
-
-	if user.RequestToken == nil {
-		revel.TRACE.Println(requestTokenCache[user.Id])
-		if val, ok := requestTokenCache[user.Id]; ok {
-			user.RequestToken = &val
-		}
-	}
-
-	if oauthVerifier != "" {
-		oauth.TOKEN_SECRET_PARAM = "oauth_token_secret"
-		if accessToken, err := CourseraConsumer.AuthorizeToken(user.RequestToken, oauthVerifier); err == nil {
-			user.AccessToken = accessToken
-			getIdentity := func(addr string) (string, error) {
-				resp, err := CourseraConsumer.Get(addr, map[string]string{}, accessToken)
-				if err != nil {
-					return "", err
-				}
-				defer resp.Body.Close()
-				idty, _ := ioutil.ReadAll(resp.Body)
-				return string(idty), nil
-			}
-			trustedIdentity, err1 := getIdentity(CourseraGetTrustedIdentityAddress)
-			regularIdentity, err2 := getIdentity(CourseraGetIdentityAddress)
-			if err1 != nil || err2 != nil {
-				c.Flash.Error("Cannot get user identity from coursera!")
-				stats.Incr("User", "CourseraAuthenticationFailed")
-				return c.Redirect(routes.PublicApplication.Index())
-			}
-			stats.Incr("User", "CourseraAuthentication")
-			stats.Log("User", "Coursera", "Connected to coursera with identity: "+regularIdentity)
-			models.SetUserCourseraCredentials(user, user.AccessToken, user.RequestToken, trustedIdentity, regularIdentity)
-		} else {
-			revel.TRACE.Println("Error connecting to coursera:", err)
-			c.Flash.Error("Cannot connect to coursera!")
-		}
-		return c.Redirect(routes.PublicApplication.Index())
-	}
-
-	oauth.TOKEN_SECRET_PARAM = "oauth_secret"
-	if requestToken, url, err := CourseraConsumer.GetRequestTokenAndUrl(MasterAddress + "/coursera/authenticate"); err == nil {
-		user.RequestToken = requestToken
-		requestTokenCache[user.Id] = *requestToken
-		return c.Redirect(url)
-	} else {
-		stats.Incr("User", "CourseraAuthenticationFailed")
-		c.Flash.Error("Cannot connect account to coursera!")
-	}
-	return c.Redirect(routes.PublicApplication.Index())
 }

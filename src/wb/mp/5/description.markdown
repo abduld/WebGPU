@@ -27,7 +27,7 @@ Edit the code in the code tab to perform the following:
 - copy results from device to host
 - deallocate device memory
 - implement the work efficient scan routine
-- use shared memory to  reduce the number of global accesses, handle the boundary conditions in when loading input list elements into the shared memory
+- use shared memory to reduce the number of global memory accesses, handle the boundary conditions when loading input list elements into the shared memory
 
 Instructions about where to place each part of the code is
 demarcated by the `//@@` comment lines.

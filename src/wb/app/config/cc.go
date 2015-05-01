@@ -3,7 +3,7 @@ package config
 import (
 	"os/exec"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (
@@ -18,7 +18,7 @@ func findExe(s string) (string, error) {
 	if res, err := exec.LookPath(ccName); err == nil {
 		return res, err
 	} else {
-		revel.WARN.Println("Cannot find CompilerLocation" , ccName)
+		revel.WARN.Println("Cannot find CompilerLocation", ccName)
 		return "", err
 	}
 }

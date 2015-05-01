@@ -1,28 +1,28 @@
 package config
 
-import (
-	"github.com/robfig/revel"
-)
+import "path/filepath"
 
 var (
 	CPPAMPCompilerLocation string
-	CPPAMPCompiler string
+	CPPAMPCompiler         string
+	CPPAMPConfig           string
 )
 
 func findCPPAMPDirectory() {
-	if comp, found := NestedRevelConfig.String("openacc.compiler"); found {
-		CPPAMPCompiler = comp
-	} else {
-		CPPAMPCompiler = "pgcpp"
-	}
-	if dir, found := NestedRevelConfig.String("openacc.directory"); found {
+	if dir, found := NestedRevelConfig.String("cppamp.directory"); found {
 		CPPAMPCompilerLocation = dir
 	} else {
-		var err error
-		CPPAMPCompilerLocation, err = findExe(CPPAMPCompiler)
-		if err == nil {
-			revel.INFO.Println("Found OpenACC compiler ... ", CPPAMPCompilerLocation)
-		}
+		CPPAMPCompilerLocation = "/opt/clamp"
+	}
+	if comp, found := NestedRevelConfig.String("cppamp.compiler"); found {
+		CPPAMPCompiler = comp
+	} else {
+		CPPAMPCompiler = filepath.Join(CPPAMPCompilerLocation, "bin", "clang++")
+	}
+	if conf, found := NestedRevelConfig.String("cppamp.config"); found {
+		CPPAMPConfig = conf
+	} else {
+		CPPAMPConfig = filepath.Join(CPPAMPCompilerLocation, "bin", "clamp-config")
 	}
 }
 

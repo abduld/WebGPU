@@ -1,85 +1,83 @@
-{{set . "title" "Sign up"}}
-{{template "header.html" .}}
+{{set . "title" "Sign up"}} {{template "header.html" .}}
 
 <div class="container">
-  <h1>
+    <h1>
     Sign up for an Account
   </h1>
-  <div class="panel panel-primary">
-    <div class="panel-body">
-      <form class="form-horizontal container" action="/signup" method="post">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <form class="form-horizontal" action="/signup" method="post">
 
-        <div class="form-group">
-          <label for="inputUserName" class="col-lg-2 control-label">User Name:</label>
-          <div class="col-lg-10">
-            <input type="inputUserName" class="form-control" name="user.UserName" id="user_name" placeholder="User Name">
-          </div>
+                <div class="form-group">
+                    <label for="inputUserName" class="col-lg-2 control-label">User Name:</label>
+                    <div class="col-lg-10">
+                        <input type="inputUserName" class="form-control" name="user.UserName" id="user_name" placeholder="User Name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">Password:</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" name="user.Password" id="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordConfirm" class="col-sm-2 control-label">Confirm Password:</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" name="user.PasswordConfirm" id="passwordConfirm" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">Email Address:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" name="user.Email" id="email" placeholder="Email Address">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-2 control-label">First Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="user.FirstName" id="firstName" placeholder="First Name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" class="col-sm-2 control-label">Last Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="user.LastName" id="lastName" placeholder="Last Name">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="affiliation" class="col-sm-2 control-label">Affiliation:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="user.Affiliation" id="affiliation" placeholder="Affiliation">
+                    </div>
+                </div>
+
+                <hr/>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="user.TermsOfUse"> In accordance with the Honor Code, I certify that my answers here are my own work, and that I have appropriately acknowledged all external sources (if any) that were used in this work.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="text-right col-sm-offset-11 col-sm-1">
+                        <button type="submit" class="btn btn-danger btn-lg">Signup</button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group row">
-          <label for="password" class="col-md-2 control-label">Password:</label>
-          <div class="col-md-10">
-            <input type="password" class="form-control" name="user.Password" id="password" placeholder="Password">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="passwordConfirm" class="col-md-2 control-label">Confirm Password:</label>
-          <div class="col-md-10">
-            <input type="password" class="form-control" name="user.PasswordConfirm" id="passwordConfirm" placeholder="Password">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="email" class="col-md-2 control-label">Email Address:</label>
-          <div class="col-md-10">
-            <input type="email" class="form-control" name="user.Email" id="email" placeholder="Email Address">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="firstName" class="col-md-2 control-label">First Name:</label>
-          <div class="col-md-10">
-           <input type="text" class="form-control" name="user.FirstName" id="firstName" placeholder="First Name">
-         </div>
-        </div>
-
-        <div class="form-group">
-          <label for="lastName" class="col-md-2 control-label">Last Name:</label>
-          <div class="col-md-10">
-           <input type="text" class="form-control" name="user.LastName" id="lastName" placeholder="Last Name">
-         </div>
-        </div>
-
-
-        <div class="form-group">
-          <label for="affiliation" class="col-md-2 control-label">Affiliation:</label>
-          <div class="col-md-10">
-            <input type="text" class="form-control" name="user.Affiliation" id="affiliation" placeholder="Affiliation">
-          </div>
-        </div>
-
-        <hr/>
-
-        <div class="form-group">
-          <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="user.TermsOfUse">
-                In accordance with the Honor Code, I certify that my answers here are my own work, and that I have appropriately acknowledged all external sources (if any) that were used in this work.
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-md-offset-11 col-md-1">
-           <button type="submit" class="btn btn-danger btn-lg">Signup</button>
-         </div>
-       </div>
-      </form>
     </div>
-  </div>
 </div>
 
 

@@ -1,19 +1,21 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 //
 type MachineProblem struct {
-	Id             int64     `json:"id" qbs:"pk,notnull"`
-	Number         int       `json:"number" qbs:"notnull"`
-	UserInstanceId int64     `json:"user_id" qbs:"fk:User"`
-	Reserved1      string    `json:"-"`
-	Reserved2      string    `json:"-"`
-	Reserved3      string    `json:"-"`
-	Reserved4      string    `json:"-"`
-	Reserved5      string    `json:"-"`
-	Updated        time.Time `json:"updated"`
-	Created        time.Time `json:"created"`
+	Id             int64     `json:"id" gorm:"column:id; primary_key:yes"`
+	Number         int       `json:"number" sql:"not null"`
+	UserInstanceId int64     `json:"user_id" gorm:"column:user_instance_id" sql:"not null"`
+	Reserved1      string    `json:"-" gorm:"column:reserved1"`
+	Reserved2      string    `json:"-" gorm:"column:reserved2"`
+	Reserved3      string    `json:"-" gorm:"column:reserved3"`
+	Reserved4      string    `json:"-" gorm:"column:reserved4"`
+	Reserved5      string    `json:"-" gorm:"column:reserved5"`
+	Updated        time.Time `json:"updated" gorm:"column:updated"`
+	Created        time.Time `json:"created" gorm:"column:created"`
 }
 
 // Create machine problem table if it already does not exist (Database Migration)
@@ -43,9 +45,8 @@ func FindMachineProblem(id int64) (MachineProblem, error) {
 func FindMachineProblemByUser(user User, mpNumber int) (MachineProblem, error) {
 	var mp MachineProblem
 	err := DB.
-		Where("user_instance_id = ? and number = ?", user.Id, mpNumber).
 		Order("id DESC").
-		First(&mp).
+		First(&mp, MachineProblem{UserInstanceId: user.Id, Number: mpNumber}).
 		Error
 	if err != nil {
 		return mp, err
@@ -55,10 +56,10 @@ func FindMachineProblemByUser(user User, mpNumber int) (MachineProblem, error) {
 
 func FindMachineProblemsByNumber(mpNumber int) ([]MachineProblem, error) {
 	var mps []MachineProblem
+
 	err := DB.
-		Where("number = ?", mpNumber).
 		Order("id DESC").
-		Find(&mps).
+		Find(&mps, MachineProblem{Number: mpNumber}).
 		Error
 	if err != nil {
 		return mps, err
@@ -86,9 +87,8 @@ func FindOrCreateMachineProblemByUser(user User, mpNumber int) (MachineProblem, 
 func RandomMachineProblemByNumber(mpNumber int) (MachineProblem, error) {
 	var mp MachineProblem
 	err := DB.
-		Where("number = ?", mpNumber).
 		Order("RAND()").
-		First(&mp).
+		First(&mp, MachineProblem{Number: mpNumber}).
 		Error
 	if err != nil {
 		return mp, err

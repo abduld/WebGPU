@@ -2,8 +2,7 @@ package server
 
 import (
 	"path/filepath"
-	
-	"github.com/robfig/revel"
+
 	. "wb/app/config"
 )
 
@@ -11,22 +10,24 @@ func MakeCPPAMPCompileCommand(s *WorkerState) string {
 	switch OperatingSystem {
 	case "Linux":
 		cmp := "#!/bin/sh\n" +
-			CPPAMPCompilerLocation +
-			" -O3 " +
-			" -lrt " +
-			" -lstdc++ " +
-			" -lm " +
-			" -acc " +
-			" -ta=nvidia " +
-			" -lpgcc " +
+			CPPAMPCompiler +
+			" `/opt/clamp/bin/clamp-config --install --cxxflags --ldflags`" +
+			" -I " + filepath.Join(NVCCCompilerLocation, "..", "..", "include") +
+			" " + filepath.Join(NVCCCompilerLocation, "..", "..", "lib64", "libcudart_static.a") +
 			" -I" + CToolsDir +
+			" -I" + filepath.Join(CUDAToolkitDirectory, "include") +
 			" " + filepath.Join(CToolsDir, SystemId, "libwb.a") +
 			" " + filepath.Join(s.TemporaryDirectory, s.ProgramFileName) +
 			" -o " + filepath.Join(s.TemporaryDirectory, s.ExecutableFileName) +
+			" -L." +
+			" -lrt " +
+			" -lcudart " +
+			" -lstdc++ " +
+			" -lm " +
+			" -lcuda " +
 			" -DWB_USE_CUSTOM_MALLOC " +
 			" -DWB_USE_COURSERA " +
 			" 2>&1\n"
-		revel.TRACE.Println(cmp)
 		return cmp
 	default:
 		return "todo"

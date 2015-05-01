@@ -1,12 +1,12 @@
 {
   "language": "CUDA",
   "week": 7,
-  "name": "Histogram (Extra Credit)",
+  "name": "Histogram",
   "peer_review_score": 0.0,
   "code_score": 1.0,
   "compile_score": 0.0,
-  "coding_deadline": "2014-02-24T22:00:00Z",
-  "peer_review_deadline": "2014-02-27T22:00:00Z",
+  "coding_deadline": "2015-03-18T23:00:00Z",
+  "peer_review_deadline": "2015-03-18T23:00:00Z",
   "keyword": [
     {
       "score": 0.3,
@@ -65,5 +65,5 @@
   ],
   "input_type": "image",
   "output_type": "image",
-  "coursera_code_post_key": "FILLME"
+  "coursera_code_post_key": "EiCVsTK9"
 }

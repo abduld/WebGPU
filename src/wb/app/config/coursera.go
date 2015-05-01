@@ -1,21 +1,21 @@
 package config
 
-const CourseraRequestTokenAddress = "https://authentication.coursera.org/auth/oauth/api/request_token"
-const CourseraAccessTokenAddress = "https://authentication.coursera.org/auth/oauth/api/access_token"
-const CourseraAuthenticationAddress = "https://authentication.coursera.org/auth//oauth/login/index.php"
-const CourseraGetIdentityAddress = "https://authentication.coursera.org/auth/oauth/api/get_identity"
-const CourseraGetTrustedIdentityAddress = "https://authentication.coursera.org/auth/oauth/api/get_trusted_identity"
+const CourseraAuthTokenAddress = "https://accounts.coursera.org/oauth2/v1/auth"
+const CourseraTokenAddress = "https://accounts.coursera.org/oauth2/v1/token"
+const CourseraGetIdentityAddress = "https://api.coursera.org/api/externalBasicProfiles.v1?q=me"
 
 var (
-	CourseraOAuthConsumerKey    string
-	CourseraOAuthConsumerSecret string
-	CourseraGradeAPIKey         string
-	CourseraGradeURL            string
+	CourseraOAuthClientKey    string
+	CourseraOAuthClientSecret string
+	CourseraGradeAPIKey       string
+	CourseraGradeURL          string
+	CourseraOAuthClientId     string
 )
 
 func InitCourseraConfig() {
-	CourseraOAuthConsumerKey, _ = NestedRevelConfig.String("coursera.oauth_consumer_key")
-	CourseraOAuthConsumerSecret, _ = NestedRevelConfig.String("coursera.oauth_consumer_secret")
+	CourseraOAuthClientKey, _ = NestedRevelConfig.String("coursera.oauth_client_key")
+	CourseraOAuthClientSecret, _ = NestedRevelConfig.String("coursera.oauth_client_secret")
 	CourseraGradeAPIKey, _ = NestedRevelConfig.String("coursera.grade.api_key")
 	CourseraGradeURL, _ = NestedRevelConfig.String("coursera.grade.url")
+	CourseraOAuthClientId, _ = NestedRevelConfig.String("coursera.oauth_client_id")
 }

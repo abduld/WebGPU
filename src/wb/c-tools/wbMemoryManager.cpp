@@ -94,8 +94,12 @@ static ulong pool_free_pos = 0;
 void memmgr_free(void *ap);
 
 void memmgr_init(size_t heapsize) {
-  void *heap = mmap(0, (size_t) heapsize, PROT_READ | PROT_WRITE,
-                    MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+  void *heap = mmap(0, (size_t)heapsize, PROT_READ | PROT_WRITE,
+#ifndef __APPLE__
+                    MAP_ANONYMOUS |
+#endif /* __APPLE__ */
+                        MAP_SHARED,
+                    -1, 0);
   if (heap == MAP_FAILED) {
     // Couldn't allocate heap memory.
     exit(22);
@@ -124,7 +128,7 @@ void memmgr_print_stats() {
   p = (mem_header_t *)pool;
 
   while (p < (mem_header_t *)(pool + pool_free_pos)) {
-    printf("  * Addr: 0x%8lu; Size: %8lu\n", (ulong) p, p->s.size);
+    printf("  * Addr: 0x%8lu; Size: %8lu\n", (ulong)p, p->s.size);
 
     p += p->s.size;
   }
@@ -135,8 +139,8 @@ void memmgr_print_stats() {
     p = freep;
 
     while (1) {
-      printf("  * Addr: 0x%8lu; Size: %8lu; Next: 0x%8lu\n", (ulong) p,
-             p->s.size, (ulong) p->s.next);
+      printf("  * Addr: 0x%8lu; Size: %8lu; Next: 0x%8lu\n", (ulong)p,
+             p->s.size, (ulong)p->s.next);
 
       p = p->s.next;
 
@@ -211,7 +215,7 @@ void *memmgr_alloc(ulong nbytes, int *err) {
         //
         prevp->s.next = p->s.next;
       } else // too big
-          {
+      {
         p->s.size -= nquantas;
         p += p->s.size;
         p->s.size = nquantas;
@@ -220,14 +224,14 @@ void *memmgr_alloc(ulong nbytes, int *err) {
       freep = prevp;
       return (void *)(p + 1);
     }
-        // Reached end of free list ?
-        // Try to allocate the block from the pool. If that succeeds,
-        // get_mem_from_pool adds the new block to the free list and
-        // it will be found in the following iterations. If the call
-        // to get_mem_from_pool doesn't succeed, we've run out of
-        // memory
-        //
-        else if (p == freep) {
+    // Reached end of free list ?
+    // Try to allocate the block from the pool. If that succeeds,
+    // get_mem_from_pool adds the new block to the free list and
+    // it will be found in the following iterations. If the call
+    // to get_mem_from_pool doesn't succeed, we've run out of
+    // memory
+    //
+    else if (p == freep) {
       if ((p = get_mem_from_pool(nquantas)) == 0) {
         *err = 1;
         return 0;

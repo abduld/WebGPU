@@ -1,0 +1,69 @@
+{{set . "title" "Class Roster "}} {{template "header.html" .}}
+
+
+<div class="container">
+    <div class="panel-heading">
+        <div class="row">
+            <h1 class="col-md-9">
+        Class Roster for Machine Problem
+      </h3>
+      <a href="/admin/all/mp/{{.mp_num}}" class="col-md-3 text-right btn btn-lg btn-danger">
+        Expand All Students
+      </a>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Log</th>
+            <th>Program Grade</th>
+            <th>Questions Grade</th>
+            <th>Total Grade</th>
+            <th>Last Updated</th>
+          </tr>
+        </thead>
+        <tbody >
+          {{ range .class_roster }}
+          <tr>
+            <td>
+              {{ .Student.Email }}
+            </td>
+            <td>
+              <strong>
+                <a href="/admin/student/{{.Student.Id}}/mp/{{$.mp_num}}">{{ .Student.LastName }}, {{ .Student.FirstName }}</a>
+              </strong>
+            </td>
+            <td>
+              <a href="/admin/student/{{.Student.Id}}/mp/{{$.mp_num}}/attempts">
+                <span class="glyphicon glyphicon-align-justify" title="Attempts"></span>
+              </a>
+              <a href="/admin/student/{{.Student.Id}}/mp/{{$.mp_num}}/programs">
+                <span class="glyphicon glyphicon-list-alt" title="Programs"></span>
+              </a>
+              <a href="/admin/student/{{.Student.Id}}/mp/{{$.mp_num}}/grades">
+                <span class="glyphicon glyphicon-ok" title="Grades"></span>
+              </a>
+            </td>
+            <td>{{ .Grade.CodeScore }}</td>
+            <td>{{ .Grade.PeerReviewScore }}</td>
+            <td>{{ .Grade.TotalScore }}</td>
+            <td> <abbr class="timeago" title="{{ rfc3339 .Grade.Updated }}">{{ .Grade.Updated }}</abbr>
+            </td>
+          </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <a href="/admin/mp/{{.mp_num}}/export_csv"> Export Grades to CSV </a>
+    </div>
+  </div>
+</div>
+
+{{template "footer.html" .}}

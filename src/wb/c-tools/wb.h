@@ -109,6 +109,7 @@ extern char *solutionJSON;
 #include <wbExit.h>
 #include <wbInit.h>
 #include <wbCUDA.h>
+#include <wbSparse.h>
 
 /***********************************************************/
 /***********************************************************/

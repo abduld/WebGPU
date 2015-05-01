@@ -60,7 +60,7 @@ Once you have a solution, you click on the **Compile & Run** tab.
 This will first save your work on the server and then submit it for processing (note: while code is saved automatically by the system, it is a good idea to keep a backup of the program).
 In case the server is overloaded, your computation will be placed in a queue (this is a great motivation to not start the lab at the last minute).
 
-The **Questions** tab shows questions that must be answered for this MP.
+The **Questions** tab shows questions to be answered for this MP.
 
 ![MPQuestions](help/imgs/questions.png "thumbnail")
 
@@ -189,11 +189,17 @@ The sandbox error will sometimes tell you what call is being caught, although th
 The machine problem questions are meant to allow you to think and explore your code further.
 Unlike the code section, it is enough to save your answer to submit the questions for reviewing.
 
+Answers to the questions are not graded and we encourage you to discuss them on the forums and
+through your study groups.
+
+<!--
+
 During the peer review phase, you'll see other people's question responses and understand the different
 approaches they took to implement the machine problem and what problems they encountered.
 
 Note: if we detect that you have not answered your questions, then you'll get 0 points
 for the peer review. On the second offense you'll get 0 points for the code section as well.
+-->
 
 ## Development Suggestions
 
@@ -214,7 +220,7 @@ Again, do keep a backup of your programs. We suggest you backup using a private 
 Free `git` private repositories are offered by Github and Bitbucket.
 
 * You can reset the MP (get the original skeleton code) by going to
-  `webgpu.hwu.crhc.illinois.edu/mp/1/revert` (replacing the `1` with the mp number)
+  `webgpu.com/mp/1/revert` (replacing the `1` with the mp number)
   and then back to the MP page
 
 * Tab completion is supported in the code editor by using the `Ctrl+Space` key combination
@@ -224,7 +230,11 @@ Free `git` private repositories are offered by Github and Bitbucket.
 ## Grading
 
 Grading is performed based on criteria that are specific for each lab.
+
+<!--
 You will be graded not only on the code, but also on peer reviewing other people.
+-->
+
 For each attempt in the attempts tab, you'll see a *submit for grading* button.
 
 ![Attempt](help/imgs/attempt.png "thumbnail")
@@ -234,9 +244,10 @@ Clicking on that would tell the system to grade that attempt and redirect you to
 
 ![Grade](help/imgs/grade.png "thumbnail")
 
-The grades are not automatically sent to Coursera.
+The grades are automatically sent to Coursera.
 You will have to submit your grade back to Coursera by clicking the button.
 
+<!--
 ## Peer Review
 
 Two hours after the coding deadline has expired, you will have
@@ -291,6 +302,7 @@ The second offense will result in a 0 for the machine problem.
 * Based on the above, give a grade to the answers.
 
 
+-->
 
 
 ## Local Development

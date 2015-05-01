@@ -20,7 +20,7 @@ import (
 	"wb/app/server"
 	"wb/app/stats"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 	"github.com/russross/blackfriday"
 )
 
@@ -30,13 +30,30 @@ type PublicApplication struct {
 
 func (c PublicApplication) connected() models.User {
 	var user models.User
+	//revel.TRACE.Println(c.Action)
 	if val, ok := c.RenderArgs["user"]; ok && val.(models.User).Id != 0 {
 		user = val.(models.User)
 	} else if username, ok := c.Session["user"]; ok && username != "" {
 		user = c.getUser(username)
 		c.RenderArgs["user"] = user
 	}
+	if user.Id != 0 {
+		c.RenderArgs["is_ece408_student"] = models.IsECE408Student(user)
+		c.RenderArgs["is_ece598_student"] = models.IsECE598Student(user)
+		c.RenderArgs["is_ece408_admin"] = models.IsECE408Admin(user)
+		c.RenderArgs["is_ece598_admin"] = models.IsECE598Admin(user)
+		c.RenderArgs["is_admin"] = models.IsAdmin(user)
+	} /* else {
+	    revel.TRACE.Println("not able to find check for = " + user.UserName)
+	    revel.TRACE.Println("response from " + c.Request.RemoteAddr)
+	}*/
 	return user
+}
+
+func CheckUserInfo(c0 *revel.Controller) revel.Result {
+	c := PublicApplication{c0}
+	c.connected()
+	return nil
 }
 
 func (c PublicApplication) getUser(userName string) models.User {
@@ -69,11 +86,36 @@ func (c PublicApplication) UserNameExists() revel.Result {
 	})
 }
 
+func validEmail(email string) bool {
+	if CourseraMode {
+		return true
+	}
+	splt := strings.Split(email, "@")
+	if len(splt) > 1 {
+		/*
+			dom := splt[len(splt)-1]
+			u, err := url.Parse(dom)
+			if err != nil {
+				return false
+			}
+			return u.Host == "ou.edu" || u.Host == "ncsu.edu" || u.Host == "tennessee.edu" || u.Host == "illinois.edu" || u.Host == "utk.edu"
+		*/
+		return true
+	} else {
+		return false
+	}
+
+}
+
 func (c PublicApplication) CreateUser() revel.Result {
 	var user models.User
 
 	c.Params.Bind(&user, "user")
 
+	if !validEmail(user.Email) {
+		c.Flash.Error("Invalid email ... please use the university provided email account")
+		return c.Redirect(routes.PublicApplication.CreateUser())
+	}
 	if models.UserNameExists(user.UserName) {
 		c.Flash.Error("Username Already taken")
 		return c.Redirect(routes.PublicApplication.CreateUser())
@@ -91,7 +133,7 @@ func (c PublicApplication) CreateUser() revel.Result {
 	user.Hashed = false
 
 	if err := models.CreateUser(user); err != nil {
-		stats.TRACE.Println("Failed to create user")
+		stats.TRACE.Println("Failed to create user ", err)
 		return c.Redirect(routes.PublicApplication.CreateUser())
 	}
 
@@ -102,6 +144,17 @@ func (c PublicApplication) CreateUser() revel.Result {
 	stats.Incr("App", "Users")
 
 	return c.Redirect(routes.PublicApplication.Index())
+}
+
+func (c PublicApplication) Echo() revel.Result {
+	return c.RenderJson(map[string]interface{}{
+		"echo": "echo",
+	})
+}
+
+func (c PublicApplication) EchoPost() revel.Result {
+
+	return c.RenderJson(c.Params)
 }
 
 func (c PublicApplication) Login() revel.Result {
@@ -187,20 +240,6 @@ func (c PublicApplication) LogPageView() revel.Result {
 		}
 	}()
 
-	if IsMaster && GeoIP != nil {
-		ip := strings.Split(c.Request.RemoteAddr, ":")[0]
-		stats.Incr("User", "IP")
-		stats.Incr("User", "PageView")
-		if user := c.connected(); user.Id != 0 {
-			stats.Log("User", "UserName", user.UserName)
-		}
-		if loc := GeoIP.GetLocationByIP(ip); loc != nil {
-			stats.Log("User", "Address", c.Request.RemoteAddr)
-			if js, err := json.Marshal(loc); err == nil {
-				stats.Log("User", "GeoLocation", string(js))
-			}
-		}
-	}
 	return c.RenderJson(map[string]interface{}{
 		"status": "success",
 	})
@@ -208,8 +247,8 @@ func (c PublicApplication) LogPageView() revel.Result {
 
 func (c PublicApplication) LogMessage() revel.Result {
 	var packet stats.Packet
-
-	if err := json.NewDecoder(c.Request.Body).Decode(&packet); err == nil {
+	err := json.NewDecoder(c.Request.Body).Decode(&packet)
+	if err == nil {
 		if len(stats.Packets) > stats.MAX_PACKET_HISTORY {
 			stats.Packets = stats.Packets[:len(stats.Packets)/2]
 		}
@@ -219,6 +258,8 @@ func (c PublicApplication) LogMessage() revel.Result {
 		"status": "success",
 	})
 }
+
+const unresponsiveMinutesBeforeDead = 10
 
 func WorkerIsAlive() bool {
 	var alive map[string]bool = map[string]bool{}
@@ -230,13 +271,15 @@ func WorkerIsAlive() bool {
 			continue
 		}
 		diff := time.Since(s.Time)
-		alive[s.Address] = diff.Minutes() < 5
+		alive[s.Address] = diff.Minutes() < unresponsiveMinutesBeforeDead
 	}
 	oneIsAlive := false
 	for k, v := range alive {
 		if v {
 			oneIsAlive = true
 		} else {
+			SendAdminsEmailWhenWorkerIsDead(k, unresponsiveMinutesBeforeDead)
+			revel.TRACE.Println("Unregistering worker " + k)
 			server.UnregisterWorkerByAddress(k)
 		}
 	}
@@ -334,7 +377,7 @@ func (c PublicApplication) ResetPassword() revel.Result {
 	}
 
 	if err := SendEmail(ApplicationEmail, email, "Password Reset Request", string(buf.Bytes())); err != nil {
-		c.Flash.Error("Cannot send email.")
+		c.Flash.Error("Cannot send email")
 		return c.Redirect(routes.PublicApplication.Index())
 	}
 

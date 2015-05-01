@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strings"
 	"time"
 	"wb/app/models"
 	"wb/app/stats"
- 	"math/rand"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (
@@ -25,6 +25,7 @@ func RegisterWorker(w *WorkerInfo) {
 	}
 	if _, p := Workers[w.Address]; p == false {
 		Workers[w.Address] = w
+		revel.TRACE.Println("Added worker...")
 		stats.Incr("Master", "Workers")
 	}
 }
@@ -166,7 +167,7 @@ func CreateAttemptWithStates(states []WorkerState) (attempts []models.Attempt, g
 
 		err = models.DB.Save(&attempt).Error
 		if err != nil {
-			revel.TRACE.Println("Failed saving attempt..")
+			revel.TRACE.Println("Failed saving attempt..  ", err)
 			stats.Incr("Master", "FailedAttemptStore")
 		} else {
 			attempts = append(attempts, attempt)
@@ -177,6 +178,9 @@ func CreateAttemptWithStates(states []WorkerState) (attempts []models.Attempt, g
 		stats.Incr("Master", "UpdatingGrade")
 		//revel.TRACE.Println("Updating grade...")
 		grade, err = models.UpdateGradeWithAttempts(attempts)
+		if err != nil {
+			revel.TRACE.Println("Error updating grade  ", err)
+		}
 	}
 
 	return

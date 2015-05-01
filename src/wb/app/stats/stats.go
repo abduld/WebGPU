@@ -10,22 +10,11 @@ func InitStats() {
 
 	InitStatsLogger()
 
-	if IsMaster && EnableUDP {
-		StartUDPServer()
-	}
-
-	if EnableRedisStore {
-		InitRedisStats()
-	}
-
-	if EnableInfluxStore {
-		InitInfluxStats()
-	}
-
 	DoEvery(SystemMeasureInterval, func(t time.Time) {
-		LogCPUInformation()
+		LogGPUInformation()
 		LogAppInformation()
 	})
+	ResetStats()
 }
 
 func ResetStats() {

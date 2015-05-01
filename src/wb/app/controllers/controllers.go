@@ -5,31 +5,26 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync"
 	"time"
 	. "wb/app/config"
 
-	"github.com/nranchev/go-libGeoIP"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (
-	GithubUser       string
-	GithubToken      string
-	GithubRepository string
-	GeoIP            *libgeo.GeoIP
+	createBigCodeDatabaseMutex *sync.Mutex
 )
 
 func InitControllers() {
-	conf := NestedRevelConfig
 
-	GithubUser, _ = conf.String("github.user")
-	GithubToken, _ = conf.String("github.token")
-	GithubRepository, _ = conf.String("github.repository")
-
+	revel.InterceptMethod(CheckCourseraMode, revel.BEFORE)
 	revel.InterceptMethod(PublicApplication.AddUser, revel.BEFORE)
 	revel.InterceptMethod(CheckWorker, revel.BEFORE)
 	revel.InterceptFunc(CheckUser, revel.BEFORE, &SecuredApplication{})
-	revel.InterceptFunc(CheckUser, revel.BEFORE, &CourseraApplication{})
+	if CourseraMode {
+		revel.InterceptFunc(CheckUser, revel.BEFORE, &CourseraApplication{})
+	}
 
 	revel.TemplateFuncs["rfc3339"] = func(t time.Time) string {
 		return t.Format(time.RFC3339)
@@ -50,6 +45,9 @@ func InitControllers() {
 	}
 	revel.TemplateFuncs["percentageToInt"] = func(f float32) int {
 		return int(f * 100)
+	}
+	revel.TemplateFuncs["splitComma"] = func(str string) []string {
+		return strings.Split(str, ",")
 	}
 	revel.TemplateFuncs["positiveQ"] = func(i int) bool {
 		return i > 0
@@ -78,14 +76,18 @@ func InitControllers() {
 	}
 
 	MPFileDirectory = filepath.Join(revel.BasePath, "mp")
-
-	GeoIP, _ = libgeo.Load(GeoIPDatabaseFile)
-
-	InitCourseraController()
+	createBigCodeDatabaseMutex = &sync.Mutex{}
+	if CourseraMode {
+		InitCourseraController()
+	}
+	if IsMaster {
+		InitAdminController()
+	}
 }
 
 func ResetControllers() {
 	NoticeCache = nil
+	InitAdminController()
 }
 
 type RenderHtmlResult struct {

@@ -1,0 +1,83 @@
+<div class="mp-id" id="{{.mp_config.Number}}">
+</div>
+<div role="tabpanel">
+        <ul id="tab-interface" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="{{.bigcode_min_active}}">
+                <a href="#sug_{{.bigcode_min.ProgramId}}" aria-controls="{{.bigcode_min.ProgramId}}" class="review-tab" id="{{.bigcode_min.ProgramId}}" data-toggle="tab">Sample Solution 0</a>
+            </li>
+	    <li role="presentation" class="{{.bigcode_max_active}}">
+                <a href="#sug_{{.bigcode_max.ProgramId}}" aria-controls="{{.bigcode_max.ProgramId}}" class="review-tab" id="{{.bigcode_max.ProgramId}}" data-toggle="tab">Sample Solution 1</a>
+	    </li>
+	    <li role="presentation" class="{{.bigcode_random_active}}">
+                <a href="#sug_{{.bigcode_random.ProgramId}}" aria-controls="{{.bigcode_random.ProgramId}}" class="review-tab" id="{{.bigcode_random.ProgramId}}" data-toggle="tab">Sample Solution 2</a>
+	    </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane {{.bigcode_min_active}}" role="tabpanel" id="sug_{{.bigcode_min.ProgramId}}">
+		<div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <h3 class="col-md-10">Click <b>Yes</b> if this suggested solution was helpful, otherwise click <b>No</b></h3>
+                                <div class="btn btn-lg yes-bigcode-button btn-success col-md-1 text-right" id="min" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_min.ProgramId}}" data-style="expand-right">
+                                    Yes
+                                </div>
+                                <div class="btn btn-lg no-bigcode-button btn-danger col-md-1 text-right" id="min" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_min.ProgramId}}" data-style="expand-right">
+                                    No
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="codemirror">
+					<textarea class="readonly code-editor">{{ raw .bigcode_min.Code }}</textarea>
+                                </div>
+                            </div>
+			</div>
+		</div>
+	   </div>
+           <div role="tabpanel" class="tab-pane {{.bigcode_max_active}}" id="sug_{{.bigcode_max.ProgramId}}">
+		<div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <h3 class="col-md-10">Click <b>Yes</b> if this suggested solution was helpful, otherwise click <b>No</b></h3>
+                                <div class="btn btn-lg yes-bigcode-button btn-success col-md-1 text-right" id="max" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_max.ProgramId}}" data-style="expand-right">
+                                    Yes
+                                </div>
+                                <div class="btn btn-lg no-bigcode-button btn-danger col-md-1 text-right" id="max" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_max.ProgramId}}" data-style="expand-right">
+                                    No
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="codemirror">
+					<textarea class="readonly code-editor">{{ raw .bigcode_max.Code }}</textarea>
+                                </div>
+                            </div>
+			</div>
+		</div>
+	   </div>
+           <div role="tabpanel" class="tab-pane {{.bigcode_random_active}}" id="sug_{{.bigcode_random.ProgramId}}">
+		<div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <h3 class="col-md-10">Click <b>Yes</b> if this suggested solution was helpful, otherwise click <b>No</b></h3>
+                                <div class="btn btn-lg yes-bigcode-button btn-success col-md-1 text-right" id="rand" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_random.ProgramId}}" data-style="expand-right">
+                                    Yes
+                                </div>
+                                <div class="btn btn-lg no-bigcode-button btn-danger col-md-1 text-right" id="rand" user-program-id="{{.Program.Id}}" suggested-program-id="{{.bigcode_random.ProgramId}}" data-style="expand-right">
+                                    No
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="codemirror">
+					<textarea class="readonly code-editor">{{ raw .bigcode_random.Code }}</textarea>
+                                </div>
+                            </div>
+			</div>
+		</div>
+	   </div>
+        </div>
+</div>

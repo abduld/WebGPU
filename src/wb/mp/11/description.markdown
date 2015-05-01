@@ -107,7 +107,7 @@ Implement a kernel that computes the histogram (like in the lectures) of the ima
 	end
 
 
-### Compute the Comulative Distribution Function of `histogram`
+### Compute the Cumulative Distribution Function of `histogram`
 
 This is a scan operation like you have done in the previous lab
 
@@ -116,7 +116,7 @@ This is a scan operation like you have done in the previous lab
 		cdf[ii] = cdf[ii - 1] + p(histogram[ii])
 	end
 
-Where `p` is the probability of a pixel to be in a hitogram bin
+Where `p` is the probability of a pixel to be in a histogram bin
 
 	def p(x):
 		return x / (width * height)

@@ -1,16 +1,19 @@
 
-	<footer class="footer container" role="contentinfo">
-	  <div class="container">
-	  	{{if eq .RunMode "dev"}}
-		    {{template "debug.html" .}}
-		  {{end}}
-		  <p>
-	        Designed for the <a href="https://class.coursera.org/hetero-002">Heterogeneous Parallel Programming</a> Coursera Course.
-	    </p>
-	  </div>
-	</footer>
+<footer class="footer container" role="contentinfo">
+    <div class="container">
+        {{if eq .RunMode "dev"}} {{template "debug.html" .}} {{end}} {{ if .coursera_mode }}
+        <p>
+            Designed for the <a href="https://class.coursera.org/hetero-004">Heterogeneous Parallel Programming</a> Coursera Course.
+        </p>
+        {{ else }}
+        <p>
+            Designed for ECE408 and ECE598 offered by UIUC.
+        </p>
+        {{end}}
+    </div>
+</footer>
 
-	<!--
+<!--
     <script src="/public/js/jquery.autosize.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 	$(window).load(function() {
@@ -21,6 +24,6 @@
 	});
 	</script>
 	-->
-  </body>	
+</body>
 
 </html>

@@ -1,0 +1,8 @@
+{{set . "title" "Student Program "}} {{template "header.html" .}}
+
+
+
+<div class="container">
+    <h1> Machine Problem {{ .mp.Number }} Program for <a href="mailto:{{ .student.Email }}"> {{ .student.UserName }} </a> </h1>
+</div>
+{{ template "SecuredApplication/_ReadOnlyProgram.html" . }} {{template "footer.html" .}}

@@ -1,43 +1,39 @@
-
 <div class="panel-body">
-	{{ range .questions }}
-	<div class="row">
-		<p class="lead"> <b class="question-number">{{ .Number }}</b>
-			.{{ .QuestionText }}
-		</p>
-	</div>
-	<div class="row">
-		<textarea disabled class="answer form-control" id="{{ .Number }}" placeholder="No answer">{{ raw .Answer }}</textarea>
-	</div>
-	<div class="row">
-		{{ if eq $.title "Question Answer History" }}
-		<div class="col-lg-offset-10 text-right">
-			<div class="text-muted">
-				<small>
+    {{ range .questions }}
+    <div class="row">
+        <p class="lead"> <b class="question-number">{{ .Number }}</b> .{{ .QuestionText }}
+        </p>
+    </div>
+    <div class="row">
+        <textarea disabled class="answer form-control" id="{{ .Number }}" placeholder="No answer" rows="5">{{ raw .Answer }}</textarea>
+    </div>
+    <div class="row">
+        {{ if $.show_history  }}
+        <a href="/question/history/{{ $.mp.Number }}/{{.Number}}">
+            <div class="col-lg-1 text-left text-muted">
+                (History)
+            </div>
+        </a>
+        <div class="col-lg-offset-9 text-right">
+            <div class="text-muted">
+                <small>
 					(<abbr class="timeago" title="{{rfc3339 .Created }}">
 						{{rfc3339 .Created }}
 					</abbr>)
 				</small>
-			</div>
-		</div>
-		{{ else }}
-		<a href="/question/history/{{ $.mp.Number }}/{{.Number}}">
-			<div class="col-lg-1 text-left text-muted">
-				(History)
-			</div>
-		</a>
-		<div class="col-lg-offset-9 text-right">
-			<div class="text-muted">
-				<small>
+            </div>
+        </div>
+        {{ else }}
+        <div class="col-lg-offset-10 text-right">
+            <div class="text-muted">
+                <small>
 					(<abbr class="timeago" title="{{rfc3339 .Created }}">
 						{{rfc3339 .Created }}
 					</abbr>)
 				</small>
-			</div>
-		</div>
-		{{ end }}
-	</div>
-	<hr />
-	{{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <hr /> {{ end }}
 </div>
-

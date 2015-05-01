@@ -3,7 +3,7 @@ package config
 import (
 	. "wb/app/util"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (

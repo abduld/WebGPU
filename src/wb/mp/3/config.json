@@ -2,11 +2,12 @@
 	"language": "CUDA",
   "week": 3,
   "name": "Tiled Matrix Multiplication",
-  "peer_review_score": 0.2,
-	"code_score": 0.8,
+  "peer_review_score": 0.0,
+  "questions_score": 0,
+	"code_score": 1.0,
 	"compile_score": 0.1,
-	"coding_deadline": "2014-01-30T23:00:00Z",
-	"peer_review_deadline": "2014-02-02T23:00:00Z",
+	"coding_deadline": "2015-02-20T23:00:00Z",
+	"peer_review_deadline": "2015-02-18T23:00:00Z",
 	"keyword": [
 		{
 			"score": 0.1,
@@ -15,7 +16,7 @@
 	],
 	"data": [
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"0/input0.raw",
 				"0/input1.raw"
@@ -24,7 +25,7 @@
             "description": "Dataset 0"
 		},
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"1/input0.raw",
 				"1/input1.raw"
@@ -71,6 +72,6 @@
 	],
 	"input_type": "matrix",
 	"output_type": "matrix",
-	"coursera_code_post_key": "FILLME",
-	"coursera_peer_review_post_key": "FILLME"
+	"coursera_code_post_key": "QnXd6Omn",
+	"coursera_peer_review_post_key": "NONE"
 }

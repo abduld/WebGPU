@@ -3,11 +3,12 @@ package config
 import (
 	"path/filepath"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (
 	DebugMode         bool
+	CourseraMode      bool
 	BasePath          string
 	MPFileDirectory   string
 	ApplicationSecret string
@@ -30,14 +31,18 @@ func InitConfig() {
 		DebugMode = false
 	}
 
+	if courseraMode, found := NestedRevelConfig.Bool("mode.coursera"); found {
+		CourseraMode = courseraMode
+	} else {
+		CourseraMode = true
+	}
+
 	InitLoggerConfig()
 	InitStatsConfig()
 	InitServerConfig()
 	InitMailConfig()
-
-	InitUDPConfig()
-	InitInfluxConfig()
-	InitRedisConfig()
+	InitAdminConfig()
+	InitGitHubConfig()
 
 	if IsWorker {
 		InitCCConfig()
@@ -47,11 +52,12 @@ func InitConfig() {
 
 		InitCompileConfig()
 		InitWorkerConfig()
+		InitBigCodeConfig()
 	} else {
-		InitGeoIPConfig()
-		InitCourseraConfig()
+		if CourseraMode {
+			InitCourseraConfig()
+		}
 		InitDatabaseConfig()
-		InitInfluxConfig()
 	}
 
 }

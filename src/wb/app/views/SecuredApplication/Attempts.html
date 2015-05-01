@@ -2,11 +2,9 @@
 
 
 <div class="container">
-  <h1>
+    <h1>
     {{.title}}
-  </h1>
-  
-	{{template "SecuredApplication/_Attempts.html" .}}	
+  </h1> {{template "SecuredApplication/_Attempts.html" .}}
 </div>
 
 {{template "footer.html" .}}

@@ -1,0 +1,252 @@
+
+#####################################################
+## Application
+#####################################################
+app.name=wb
+app.secret="bPlNFGdSC2wd8f2QnFhk5A84JJjKWZdKH9H2FHFuvUs9Jz8UvBHv3Vc5awx39iva"
+app.email="postmaster@webgpu.com"
+debug=true
+
+mode.dev=true
+mode.coursera=true
+results.pretty=true
+
+#####################################################
+## HTTP
+#####################################################
+http.ssl=false
+http.sslcert=
+http.sslkey=
+results.chunked=false
+module.static=github.com/revel/revel/modules/static
+# module.testrunner = github.com/revel/revel/modules/testrunner
+# module.pprof=github.com/revel/revel/modules/pprof
+
+#####################################################
+## Cookie
+#####################################################
+cookie.prefix=WB
+session.expires=240h
+
+#####################################################
+## Format
+#####################################################
+format.date=01/02/2006
+format.datetime=01/02/2006 15:04
+i18n.default_language = en
+
+
+#####################################################
+## Jobs
+#####################################################
+module.jobs = github.com/revel/revel/modules/jobs
+jobs.pool = 10                # Number of jobs allowed to run simultaneously
+jobs.selfconcurrent = false   # Allow a job to run only if previous instances are done
+
+#####################################################
+## Coursera
+#####################################################
+coursera.oauth_client_id = ""
+coursera.oauth_client_key = ""
+coursera.oauth_client_secret = "-w"
+coursera.grade.api_key = ""
+coursera.grade.url = "https://class.coursera.org/hetero-004/assignment/api/update_score"
+
+#####################################################
+## MailGun
+#####################################################
+mailgun.key = ""
+mailgun.public_key = ""
+
+#####################################################
+## Statistics
+#####################################################
+stats.measure_interval=30
+
+#####################################################
+## Github
+#####################################################
+github.user="abduld"
+github.repository="wb"
+github.token=""
+
+#####################################################
+## Logger
+#####################################################
+
+
+log.trace.output = stderr
+log.info.output  = stderr
+log.warn.output  = stderr
+log.error.output = stderr
+
+log.trace.prefix = "TRACE "
+log.info.prefix  = "INFO  "
+log.warn.prefix  = "WARN  "
+log.error.prefix = "ERROR "
+
+## Customized logger that has special output
+## semantics
+app.trace = redis
+app.info  = redis
+app.warn  = redis
+app.error = redis
+
+
+#####################################################
+## Admins
+#####################################################
+
+admin.send_emails = true
+admin.ece408_students_file = "ece408_students.txt"
+admin.ece598_students_file = "ece598_students.txt"
+admin.ece408_admins = ""
+admin.ece598_admins = ""
+
+#####################################################
+## Master
+#####################################################
+[master]
+# options common to all masters
+
+#-------------
+temporaryDirectory="/tmp"
+
+
+#-------------
+db.addr="localhost:3306"
+db.provider="mysql"
+db.database="wb"
+db.host="localhost"
+db.port=3306
+db.user="root"
+db.password=""
+
+#-----------------
+
+redis.addr = "localhost"
+
+#-----------------
+
+http.addr = "52.0.111.170"
+http.port = 9000
+
+master.ip = http.addr
+master.port = http.port
+
+#####################################################
+[master.local]
+
+debug=true
+mode.dev=true
+
+log.trace.output = stdout
+log.info.output  = stdout
+log.warn.output  = stdout
+log.error.output = stdout
+
+admin.send_emails = false
+
+#####################################################
+[master.wri]
+
+debug=true
+mode.dev=true
+
+log.trace.output = stdout
+log.info.output  = stdout
+log.warn.output  = stderr
+log.error.output = stderr
+
+
+#####################################################
+[master.deploy_ec2]
+
+#####################################################
+
+[master.deploy]
+
+
+log.trace.output = %(app.name)s.trace.log
+log.info.output  = %(app.name)s.info.log
+log.warn.output  = %(app.name)s.warn.log
+log.error.output = %(app.name)s.error.log
+
+#####################################################
+
+
+
+#####################################################
+## Worker
+#####################################################
+[worker]
+# options common to all masters
+
+
+#-------------
+temporary_directory="/tmp"
+
+#-------------
+worker.ip = "localhost"
+worker.port = 8088
+
+#-------------
+worker.register_interval = 20
+
+#-------------
+worker.compile_timeout = 15
+worker.run_timeout = 10
+#-------------
+
+
+#####################################################
+bigcode.libbigcodelocation=/home/ubuntu/llvm-bigcode/llvm-bigcode-objects/Release+Asserts/lib/libBigCode.so
+bigcode.clanglocation=/home/ubuntu/llvm/install/bin/clang
+bigcode.optlocation=/home/ubuntu/llvm/install/bin/opt
+
+#####################################################
+[worker.local]
+
+debug=true
+mode.dev=true
+
+http.addr = "localhost"
+http.port = 8088
+
+log.trace.output = stdout
+log.info.output  = stdout
+log.warn.output  = stderr
+log.error.output = stderr
+
+
+worker.register_interval = 10
+
+admin.send_emails = false
+
+
+#####################################################
+[worker.wri]
+
+
+http.addr = "localhost"
+http.port = 8088
+
+######################################################
+
+[worker.deploy_ec2]
+
+http.port = 8088
+
+worker.ip = "52.0.111.170"
+worker.port = 8088
+
+temporary_directory="/tmp"
+
+log.trace.output = log_traces.log
+log.info.output  = log_infos.log
+log.warn.output  = log_warns.log
+log.error.output = log_errors.log
+
+redis.enable = false
+
+

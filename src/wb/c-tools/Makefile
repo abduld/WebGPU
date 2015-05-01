@@ -3,16 +3,18 @@
 ##########################################
 # INPUT
 ##########################################
-CXX=gcc
+CXX=g++
 DEFINES=-DWB_USE_CUDA
 DEFINES+=-DWB_USE_CUSTOM_MALLOC -DWB_USE_COURSERA
 CUDA_TOOLKIT_PATH=/scr/dakkak/usr/cuda
-CXX_FLAGS=-fPIC -x c++ -O3 -I . -I $(CUDA_TOOLKIT_PATH)/include  -static
-CXX_FLAGS+=-L $(HOME)/usr/lib -L $(HOME)/usr/cuda/lib -Wall 
+CUDA_TOOLKIT_PATH=/usr/local/cuda
+CXX_FLAGS=-fPIC -x c++ -O3 -I . -I $(CUDA_TOOLKIT_PATH)/include 
+CXX_FLAGS+=-L $(HOME)/usr/lib -L $(HOME)/usr/cuda/lib -Wall  -lcuda -lcudart -lcudadevrt
 CXX_FLAGS+=-I$(HOME)/usr/cuda/include -I$(HOME)/usr/include 
-CXX_FLAGS+=-I/scr/dakkak/usr/cuda/include -L/scr/dakkak/usr/cuda/lib 
+CXX_FLAGS+=-I$(CUDA_TOOLKIT_PATH)/include -L/usr/local/cuda/lib64
+CXX_FLAGS+=-I$(CUDA_TOOLKIT_PATH)/include -L/usr/local/cuda/lib64/stubs
 CXX_FLAGS+=$(DEFINES)
-LIBS=#-lm -lstdc++ -lrt -lcuda -L$(HOME)/usr/lib -L/scr/dakkak/usr/cuda/lib
+LIBS=-lm -lcuda -lcudart -L$(HOME)/usr/lib -L$(CUDA_TOOLKIT_PATH)/lib64 -lcudadevrt -L$(CUDA_TOOLKIT_PATH)/lib64/stubs
 ARCH=$(shell uname -s)-x86_64
 
 ##########################################
@@ -31,6 +33,7 @@ SOURCES :=  wbArg.cpp        \
 			wbSandbox.cpp          \
 			wbCUDA.cpp			   		 \
 			wbSolution.cpp         \
+			wbSparse.cpp         \
 			wbTimer.cpp
 
 
@@ -54,9 +57,9 @@ OBJECTS = $(SOURCES:.cpp=.o)
 	$(CXX) $(DEFINES) $(CXX_FLAGS) -c -o $@ $<
 
 
-libwb.so: $(OBJECTS)
+libwb.so: $(SOURCES)
 	mkdir -p $(ARCH)
-	$(CXX) -fPIC -shared $(LIBS) -o $(ARCH)/$@ $(OBJECTS)
+	$(CXX) -fPIC -shared $(LIBS) -o $(ARCH)/$@ $(SOURCES) $(DEFINES) $(CXX_FLAGS)
 
 libwb.a: $(OBJECTS)
 	mkdir -p $(ARCH)

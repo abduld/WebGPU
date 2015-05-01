@@ -2,13 +2,13 @@
 	"language": "cuda",
   	"week": 1,
   	"name": "Lab Tour with Device Query",
-	"code_score": 0.5,
-	"compile_score": 0.5,
-	"peer_review_score": 0.5,
+	"code_score": 1,
+	"compile_score": 1,
+	"peer_review_score": 0.0,
 	"questions": 0.0,
 	"output_type": "text",
-	"coding_deadline": "2014-01-13T06:01:00Z",
-	"peer_review_deadline": "2014-06-19T23:00:00Z",
-	"coursera_code_post_key": "FILLME",
-	"coursera_peer_review_post_key": "FILLME"
+	"coding_deadline": "2015-02-11T23:00:00Z",
+	"peer_review_deadline": "2015-02-11T23:00:00Z",
+	"coursera_code_post_key": "1VNPevNy",
+	"coursera_peer_review_post_key": "NONE"
 }

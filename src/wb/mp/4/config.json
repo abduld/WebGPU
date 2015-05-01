@@ -1,12 +1,13 @@
 {
 	"language": "CUDA",
-  "peer_review_score": 0.2,
+  "peer_review_score": 0.0,
   "name": "List Reduction",
   "week": 5,
-	"code_score": 0.8,
+  "questions_score": 0,
+	"code_score": 1.0,
 	"compile_score": 0.0,
-	"coding_deadline": "2014-02-10T23:00:00Z",
-	"peer_review_deadline": "2014-02-13T23:00:00Z",
+	"coding_deadline": "2015-03-04T23:00:00Z",
+	"peer_review_deadline": "2015-03-04T23:00:00Z",
 	"keyword": [
 		{
 			"score": 0.1,
@@ -14,12 +15,12 @@
 		},
 		{
 			"score": 0.1,
-			"data": "__syncthreads"
+			"data": "syncthreads"
 		}
 	],
 	"data": [
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"0/input0.raw"
 			],
@@ -27,7 +28,7 @@
             "description": "Dataset 0"
 		},
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"1/input0.raw"
 			],
@@ -69,6 +70,6 @@
 	],
 	"input_type": "vector",
 	"output_type": "vector",
-	"coursera_code_post_key": "FILLME",
-	"coursera_peer_review_post_key": "FILLME"
+	"coursera_code_post_key": "Ci1gh2pL",
+	"coursera_peer_review_post_key": "NONE"
 }

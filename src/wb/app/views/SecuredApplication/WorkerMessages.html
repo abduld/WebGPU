@@ -1,32 +1,29 @@
-{{set . "title" "Worker Messages"}}
-{{template "header.html" .}}
+{{set . "title" "Worker Messages"}} {{template "header.html" .}}
 
 
 <div class="container">
-	<div class="row">
-		<h3 class="col-md-10">
+    <div class="row">
+        <h3 class="col-md-10">
 			Logs from Worker 
 		</h3>
-  </div>
+    </div>
 
-{{range .status}}
-  <div class="panel panel-default">
-  	<div class="panel-heading">
-		({{ raw .Address}})
-		<abbr class="timeago" title="{{rfc3339 .Time}}">
+    {{range .status}}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            ({{ raw .Address}})
+            <abbr class="timeago" title="{{rfc3339 .Time}}">
 			{{rfc3339 .Time}}
 		</abbr>
-  	</div>
-    <div class="panel-body">
-    	<pre>
+        </div>
+        <div class="panel-body">
+            <pre>
     	{{ raw .Data}}
     	</pre>
+        </div>
     </div>
-  </div>
-{{end}}
+    {{end}}
 </div>
 
 
 {{template "footer.html" .}}
-
-

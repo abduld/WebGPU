@@ -1,97 +1,106 @@
-
-
 {{template "SecuredApplication/_GradeSummary.html" .}}
 
+
+{{ if .bigcode }}
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+        <h3>Sample Solutions</h3>
+            </div>
+            <div class="panel-body">
+            {{ template "BigCode/Suggestions.html" . }} 
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
 
 {{ if not .peer_reviews }}
 {{template "SecuredApplication/_ReadOnlyProgram.html" .}}
 {{template "SecuredApplication/_ReadOnlyQuestions.html" .}}
 {{ else }}
 <div class="container">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
 				Code Reviews
 			</h3>
-		</div>
-		<div class="panel-body">
-			<div class="container">
-				<div class="row">
-					<div class="codemirror">
-						<textarea class="readonly code-editor">{{ raw .program.Text }}</textarea>
-					</div>
-				</div>
-				<hr/>
-	      <blockquote>
-			    <table class="table table-striped">
-			    	<thead>
-		    			<tr>
-		    				<th>Reviewer</th>
-		    				<th>Comments</th>
-		    			</tr>
-			    	</thead>
-						<tbody>
-							{{ range $idx, $val := .peer_reviews}}
-								<tr>
-									<td>{{ plus $idx 1 }} </td>
-									<td>{{ raw $val.CodeReviewComment }}</td>
-								</tr>
-							{{ end }}
-						</tbody>
-					</table>
-				</blockquote>
-			</div>
-		</div>
-	</div>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <div class="row">
+                    <div class="codemirror">
+                        <textarea class="readonly code-editor">{{ raw .program.Text }}</textarea>
+                    </div>
+                </div>
+                <hr/>
+                <blockquote>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Reviewer</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ range $idx, $val := .peer_reviews}}
+                            <tr>
+                                <td>{{ plus $idx 1 }} </td>
+                                <td>{{ raw $val.CodeReviewComment }}</td>
+                            </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </blockquote>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="container">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
 				Question Reviews
 			</h3>
-		</div>
-		<div class="panel-body">
-			<div class="container">
-		    	<table class="table">
-					<tbody>
-						{{ if .questions }}
-						{{ range .questions }}
-						<tr>
-							<td>
-								<p class="lead"> <b class="question-number">{{ .Number }}</b>
-									.{{ .QuestionText }}
-								</p>
-								<textarea disabled class="answer form-control" id="{{ .Number }}">{{ raw .Answer }}</textarea>
-							</td>
-						</tr>
-						<tr></tr>
-						{{ end }}
-						{{ end }}
-					</tbody>
-				</table>
-				<hr/>
-	      	<blockquote>
-			    	<table class="table table-striped">
-			    		<thead>
-			    			<tr>
-			    				<th>Reviewer</th>
-			    				<th>Comments</th>
-			    			</tr>
-			    		</thead>
-						<tbody>
-							{{ range $idx, $val := .peer_reviews}}
-								<tr>
-									<td>{{ plus $idx 1 }} </td>
-									<td>{{ raw $val.QuestionReviewComment }}</td>
-								</tr>
-							{{ end }}
-						</tbody>
-					</table>
-				</blockquote>
-			</div>
-		</div>
-	</div>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <table class="table">
+                    <tbody>
+                        {{ if .questions }} {{ range .questions }}
+                        <tr>
+                            <td>
+                                <p class="lead"> <b class="question-number">{{ .Number }}</b> .{{ .QuestionText }}
+                                </p>
+                                <textarea disabled class="answer form-control" id="{{ .Number }}">{{ raw .Answer }}</textarea>
+                            </td>
+                        </tr>
+                        <tr></tr>
+                        {{ end }} {{ end }}
+                    </tbody>
+                </table>
+                <hr/>
+                <blockquote>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Reviewer</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ range $idx, $val := .peer_reviews}}
+                            <tr>
+                                <td>{{ plus $idx 1 }} </td>
+                                <td>{{ raw $val.QuestionReviewComment }}</td>
+                            </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </blockquote>
+            </div>
+        </div>
+    </div>
 </div>
 {{ end }}
-

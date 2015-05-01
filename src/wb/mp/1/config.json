@@ -2,14 +2,14 @@
 	"language": "CUDA",
   "week": 2,
   "name": "Vector Addition",
-	"peer_review_score": 0.2,
-	"code_score": 0.8,
+	"peer_review_score": 0.0,
+	"code_score": 1.0,
 	"compile_score": 0.2,
-	"coding_deadline": "2014-01-22T23:00:00Z",
-	"peer_review_deadline": "2014-01-25T23:00:00Z",
+	"coding_deadline": "2015-02-11T23:00:00Z",
+	"peer_review_deadline": "2015-02-11T23:00:00Z",
 	"data": [
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"0/input0.raw",
 				"0/input1.raw"
@@ -18,7 +18,7 @@
 			"description": "Dataset 0"
 		},
 		{
-			"score": 0.1,
+			"score": 0.2,
 			"input": [
 				"1/input0.raw",
 				"1/input1.raw"
@@ -65,6 +65,6 @@
 	],
 	"input_type": "vector",
 	"output_type": "vector",
-	"coursera_code_post_key": "FILLME",
-	"coursera_peer_review_post_key": "FILLME"
+	"coursera_code_post_key": "1fI2lnmL",
+	"coursera_peer_review_post_key": "NONE"
 }

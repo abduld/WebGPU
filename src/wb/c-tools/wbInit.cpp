@@ -4,7 +4,7 @@
 
 #define MB (1 << 20)
 #ifndef WB_DEFAULT_HEAP_SIZE
-const size_t WB_DEFAULT_HEAP_SIZE = (256 * MB);
+const size_t WB_DEFAULT_HEAP_SIZE = (512 * MB);
 #endif /* WB_DEFAULT_HEAP_SIZE */
 
 static bool _initializedQ = wbFalse;
@@ -12,7 +12,7 @@ static bool _initializedQ = wbFalse;
 #ifndef _MSC_VER
 __attribute__((__constructor__))
 #endif /* _MSC_VER */
-    void wb_init(void) {
+void wb_init(void) {
   if (_initializedQ == wbTrue) {
     return;
   }
@@ -30,7 +30,7 @@ __attribute__((__constructor__))
     cudaSetDevice(rand() % deviceCount);
   }
 
-  cudaDeviceSetLimit(cudaLimitPrintfFifoSize, 1*MB);
+  cudaDeviceSetLimit(cudaLimitPrintfFifoSize, 1 * MB);
   cudaDeviceSetLimit(cudaLimitMallocHeapSize, WB_DEFAULT_HEAP_SIZE);
 
   cudaDeviceSynchronize();

@@ -1,6 +1,6 @@
 
 
-> MP9  is an optional assignment. You will not be penalized for not doing the assignment.
+> This  is an optional assignment. You will not be penalized for not doing the assignment.
 
 ## Objective
 

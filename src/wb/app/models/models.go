@@ -1,33 +1,50 @@
 package models
 
 import (
+	"time"
 	. "wb/app/config"
-	"wb/app/stats"
 
-	"github.com/abduld/gorm"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/robfig/revel"
+	"github.com/jinzhu/gorm"
+	"github.com/revel/revel"
 )
 
 var (
 	DB gorm.DB
 )
 
-func dbRegister() {
-	var err error
-	if err != nil {
-		stats.ERROR.Println("Cannot connect to database: ", err)
+func updateTimeStampWhenCreate(scope *gorm.Scope) {
+	if !scope.HasError() {
+		now := time.Now()
+		scope.SetColumn("Created", now)
+		scope.SetColumn("Updated", now)
 	}
+}
+
+func updateTimeStampWhenUpdate(scope *gorm.Scope) {
+	if !scope.HasError() {
+		now := time.Now()
+		scope.SetColumn("Updated", now)
+	}
+}
+
+func dbRegister() {
 
 	if db, err := gorm.Open(DatabaseProvider, DatabaseSourceName); err == nil {
 		DB = db
 
 		DB.SingularTable(true)
-		//DB.LogMode(true)
-		DB.SetLogger(gorm.Logger{revel.INFO})
-		DB.DB().SetMaxIdleConns(1024)
-		DB.DB().SetMaxOpenConns(4098)
+		DB.LogMode(false)
+		//DB.SetLogger(gorm.Logger{revel.INFO})
+		DB.Callback().Create().Replace("gorm:update_time_stamp_when_create", updateTimeStampWhenCreate)
+		DB.Callback().Create().Replace("gorm:update_time_stamp_when_update", updateTimeStampWhenUpdate)
+
 		DB.DB().Ping()
+		DB.DB().SetMaxIdleConns(256)
+		DB.DB().SetMaxOpenConns(512)
+
+	} else {
+		revel.ERROR.Println("Cannot start database")
 	}
 }
 
@@ -39,6 +56,7 @@ func dbMigrate() {
 	CreateGradeTable()
 	CreatePeerReviewTable()
 	CreateQuestionsTable()
+	CreateBigcodeVoteTable()
 }
 
 func InitModels() {

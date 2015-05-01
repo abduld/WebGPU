@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (

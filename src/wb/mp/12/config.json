@@ -5,8 +5,8 @@
 	"peer_review_score": 0.0,
 	"code_score": 1.0,
 	"compile_score": 0.0,
-	"coding_deadline": "2014-03-03T23:00:00Z",
-	"peer_review_deadline": "2014-03-05T23:00:00Z",
+	"coding_deadline": "2015-03-28T23:00:00Z",
+	"peer_review_deadline": "2015-03-28T23:00:00Z",
 	"data": [
 		{
 			"score": 0.2,
@@ -65,5 +65,5 @@
 	],
 	"input_type": "vector",
 	"output_type": "vector",
-	"coursera_code_post_key": "FILLME"
+	"coursera_code_post_key": "v2o8UK8T"
 }

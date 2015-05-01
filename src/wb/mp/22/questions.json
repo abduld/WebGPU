@@ -1,0 +1,8 @@
+{
+	"questions": [
+        "Briefly describe your implementation in one or two paragraphs as well as any difficulties you faced in developing and optimizing the kernel.",
+        "Consider a 100x100x50 7-point stencil that does not use any thread-coarsening or tiling optimizations. How much real computation does each work-item perform? How many global memory loads does each work-item perform? What is the ratio of computation to global memory loads for each work-item? (Consider as useful work only additions, subtractions, and multiplications that operate directly on the loaded data. Do not consider index computations.)",
+        "Consider a 100x100x50 7-point stencil that uses thread-coarsening and joint tiling optimizations such as the one you implemented. How much real computation does each work-item perform? How many global memory loads does each work-item perform? What is the ratio of computation to global memory loads for each work-item? (Consider as useful work only additions, subtractions, and multiplications that operate directly on the loaded data. Do not consider index computations.)",
+        "Briefly comment on the difference in computation to global memory loads ratios for the two cases."
+	]
+}

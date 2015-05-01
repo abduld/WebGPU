@@ -3,7 +3,7 @@ package config
 import (
 	"strings"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 type NestedConfig struct {
@@ -76,12 +76,12 @@ func (c *NestedConfig) StringInSection(option string, section string) (string, b
 	// Allow one to reference other variables
 	if val, found := c.conf.String(option); found {
 		if t, f := c.conf.String(val); f {
-			return t, f
+			return strings.TrimSpace(t), f
 		}
 	}
 
 	if val, found := c.conf.String(option); found {
-		return val, found
+		return strings.TrimSpace(val), found
 	}
 
 	if parentSection(section) == section {
@@ -92,7 +92,7 @@ func (c *NestedConfig) StringInSection(option string, section string) (string, b
 	if !found {
 		revel.ERROR.Println("Cannnot find value for ", option)
 	}
-	return val, found
+	return strings.TrimSpace(val), found
 }
 
 func (c *NestedConfig) String(option string) (string, bool) {
@@ -101,14 +101,14 @@ func (c *NestedConfig) String(option string) (string, bool) {
 
 func (c *NestedConfig) StringDefaultInSection(option string, section string, deflt string) string {
 	if val, found := c.StringInSection(option, section); found {
-		return val
+		return strings.TrimSpace(val)
 	}
 	return deflt
 }
 
 func (c *NestedConfig) StringDefault(option string, deflt string) string {
 	if val, found := c.String(option); found {
-		return val
+		return strings.TrimSpace(val)
 	}
 	return deflt
 }

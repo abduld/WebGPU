@@ -1,0 +1,9 @@
+{{set . "title" "Machine Problem Grade for Student" }} {{template "header.html" .}} {{ template "SecuredApplication/_GradeSummary.html" .}} {{ template "SecuredApplication/_ReadOnlyProgram.html" . }}
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            {{ template "SecuredApplication/_ReadOnlyQuestionsBody.html" . }}
+        </div>
+    </div>
+</div>
+{{template "footer.html" .}}

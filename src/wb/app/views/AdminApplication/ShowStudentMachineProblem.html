@@ -1,0 +1,204 @@
+{{set . "title" "Machine Problem for Student "}} {{template "header.html" .}}
+
+
+
+<div class="container">
+    <h1> Machine Problem {{ $.mp_num }} for <a href="mailto:{{ .student.Email }}"> {{ .student.UserName }} </a> </h1>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Current Grade Information</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Last Updated On:</td>
+                            <td>
+                                <abbr class="timeago" title="{{ rfc3339 .grade.Updated }}">
+                  {{ .grade.Updated }}
+                </abbr>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total Score:</td>
+                            <td>
+                                {{ .grade.TotalScore }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Coding Score:</td>
+                            <td>
+                                {{ .grade.CodeScore }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TA Code Inspection Score:</td>
+                            <td>
+                                {{ .grade.TaCodeInspectionScore }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Questions Score:</td>
+                            <td>
+                                {{ .grade.QuestionsScore }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {{ if ne .grade.Reasons "" }}
+            <div class="panel-body">
+                <div class="container">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>
+                Point Deduction Reasons
+              </h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                                    {{ range splitComma .grade.Reasons }}
+                                    <tr>
+                                        <td>
+                                            <p> {{.}} </p>
+                                        </td>
+                                    </tr>
+                                    {{ end }}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+    {{ if .bigcode }}
+        <div class="panel panel-primary">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+			<h3>Sample Solutions</h3>
+                </div>
+                <div class="panel-body">
+		{{ template "BigCode/Suggestions.html" . }} 
+                </div>
+            </div>
+        </div>
+    {{ end }}
+    <div class="panel panel-primary">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>
+          Program Code
+        </h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="codemirror">
+                        <textarea class="readonly code-editor">{{ raw .program.Text }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Teaching Assistant Code Evaluation</h3>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="code-score" class="col-lg-2 control-label">
+                            Code Assessment:
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control code-score" value="{{.grade.CodeScore}}" placeholder="{{.grade.CodeScore}}" name="code-score">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="code-inspection-score" class="col-lg-2 control-label">
+                            Code Inspection:
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control code-inspection-score" value="{{.Grade.TaCodeInspectionScore}}" placeholder="{{.Grade.TaCodeInspectionScore}}" name="code-inspection-score">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="code-comment" class="col-lg-2 control-label">
+                            Code Comment:
+                        </label>
+                        <div class="col-lg-10">
+                            <textarea class="form-control code-comment" id="{{.admin.Id}}" name="code-comment" rows="4" placeholder="Enter comments you'd like to share with the programmer about his/her code.">{{ raw .grade.TaCodeComment }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="ta-code-text" class="col-lg-2 control-label">
+                            Code Edits:
+                        </label>
+                        <div class="col-lg-10">
+                            {{ if eq .grade.TaCodeText ""}}
+                            <textarea class="code-editor ta-code-text">{{ raw $.program.Text }}</textarea>
+                            {{ else }}
+                            <textarea class="code-editor ta-code-text">{{ raw .grade.TaCodeText }}</textarea>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Student Answers</h3>
+        </div>
+        {{ template "SecuredApplication/_ReadOnlyQuestionsBody.html" . }}
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Teaching Assistant Question Evaluation</h3>
+        </div>
+        <div class="panel-body">
+            <div class="container">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="code-score" class="col-lg-2 control-label">
+                            Question Assessment:
+                        </label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control questions-score" value="{{.grade.QuestionsScore}}" placeholder="{{.grade.QuestionsScore}}" name="questions-score">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="questions-comment" class="col-lg-2 control-label">
+                            Questions Comment:
+                        </label>
+                        <div class="col-lg-10">
+                            <textarea class="form-control questions-comment" id="{{.admin.Id}}" name="questions-comment" rows="4" placeholder="Enter comments you'd like to share with the programmer about his/her questions.">{{ raw .grade.TaQuestionsComment }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="btn btn-lg submit-ta-grade btn-danger col-md-offset-9 col-md-3 text-right" data-style="expand-right" data-mp-num="{{ $.mp_num }}" data-student-id="{{.student.Id}}">
+            Submit Grade Update
+        </div>
+    </div>
+</div>
+
+
+{{template "footer.html" .}}

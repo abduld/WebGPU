@@ -7,35 +7,40 @@ import (
 	"strings"
 	"time"
 	. "wb/app/config"
-
-	"github.com/robfig/revel"
 )
 
 type Grade struct {
-	Id                      int64     `json:"id" qbs:"pk,notnull"`
-	AttemptInstanceId       int64     `json:"attempt_id" qbs:"fk:Attempt"`
-	RunId                   string    `json:"run_id"`
-	MachineProblemId        int64     `json:"mp_id"`
-	DatasetsScored          string    `json:"datasets_scored"`
-	PeerReviewPercentage    float32   `json:"peer_review_percentage"`
-	PeerReviewScore         int64     `json:"peer_review_score" qbs:"default:'0'"`
-	CodePercentage          float32   `json:"code_percentage"`
-	CodeScore               int64     `json:"code_score" qbs:"default:'0'"`
-	TotalScore              int64     `json:"total_score" qbs:"default:'0'"`
-	Text                    string    `json:"text" qbs:"default:''"`
-	Completed               bool      `json:"completed" qbs:"default:'0'"`
-	Reasons                 string    `json:"reasons"`
-	CourseraSynced          bool      `json:"coursera_synced"`
-	CourseraCodingGrade     int64     `json:"coursera_coding_grade"`
-	CourseraPeerReviewGrade int64     `json:"coursera_peer_review_grade"`
-	CourseraGrade           int64     `json:"coursera_grade"`
-	Reserved1               string    `json:"-"`
-	Reserved2               string    `json:"-"`
-	Reserved3               string    `json:"-"`
-	Reserved4               string    `json:"-"`
-	Reserved5               string    `json:"-"`
-	Updated                 time.Time `json:"updated"`
-	Created                 time.Time `json:"created"`
+	Id                         int64     `json:"id" gorm:"column:id; primary_key:yes"`
+	AttemptInstanceId          int64     `json:"attempt_id" gorm:"column:attempt_instance_id" sql:"not null"`
+	RunId                      string    `json:"run_id" gorm:"column:run_id"`
+	MachineProblemId           int64     `json:"mp_id" gorm:"column:machine_problem_id" sql:"not null"`
+	DatasetsScored             string    `json:"datasets_scored" gorm:"column:datasets_scored"`
+	PeerReviewPercentage       float32   `json:"peer_review_percentage" gorm:"column:peer_review_percentage"`
+	PeerReviewScore            int64     `json:"peer_review_score" gorm:"column:peer_review_score" sql:"default:'0'"`
+	CodePercentage             float32   `json:"code_percentage" gorm:"column:code_percentage"`
+	CodeScore                  int64     `json:"code_score" gorm:"column:code_score" sql:"default:'0'"`
+	TotalScore                 int64     `json:"total_score" gorm:"column:total_score" sql:"default:'0'"`
+	Text                       string    `json:"text" gorm:"column:text" sql:"default:''"`
+	Completed                  bool      `json:"completed" gorm:"column:completed" sql:"default:'0'"`
+	Reasons                    string    `json:"reasons" gorm:"column:reasons"`
+	CourseraSynced             bool      `json:"coursera_synced" gorm:"column:coursera_synced"`
+	CourseraCodingGrade        int64     `json:"coursera_coding_grade" gorm:"column:coursera_coding_grade"`
+	CourseraPeerReviewGrade    int64     `json:"coursera_peer_review_grade" gorm:"column:coursera_peer_review_grade"`
+	CourseraGrade              int64     `json:"coursera_grade" gorm:"column:coursera_grade"`
+	Reserved1                  string    `json:"-" gorm:"column:reserved1"`
+	Reserved2                  string    `json:"-" gorm:"column:reserved2"`
+	Reserved3                  string    `json:"-" gorm:"column:reserved3"`
+	Reserved4                  string    `json:"-" gorm:"column:reserved4"`
+	Reserved5                  string    `json:"-" gorm:"column:reserved5"`
+	Updated                    time.Time `json:"updated" gorm:"column:updated"`
+	Created                    time.Time `json:"created" gorm:"column:created"`
+	TaGraded                   bool      `json:"ta_graded" gorm:"column:ta_graded"`
+	TaCodeComment              string    `json:"ta_code_comment" gorm:"column:ta_code_comment"`
+	TaQuestionsComment         string    `json:"ta_code_comment" gorm:"column:ta_questions_comment"`
+	TaCodeInspectionScore      int64     `json:"ta_code_inspection_score" gorm:"column:ta_code_inspection_score"`
+	TaCodeInspectionPercentage float32   `json:"ta_code_inspection_percentage" gorm:"column:ta_code_inspection_percentage"`
+	QuestionsScore             int64     `json:"questions_score" gorm:"column:questions_score"`
+	TaCodeText                 string    `json:"ta_code_text" gorm:"column:ta_code_text"`
 }
 
 // Create grade table if it already does not exist (Database Migration)
@@ -81,9 +86,8 @@ func FindGrades() ([]Grade, error) {
 func FindGradesByAttempt(attempt Attempt) ([]Grade, error) {
 	var grades []Grade
 	err := DB.
-		Where("attempt_instance_id = ? ", attempt.Id).
 		Order("updated DESC").
-		Find(&grades).
+		Find(&grades, Grade{AttemptInstanceId: attempt.Id}).
 		Error
 	if err != nil {
 		return nil, err
@@ -96,9 +100,8 @@ func FindGradesByAttempt(attempt Attempt) ([]Grade, error) {
 func FindGradeByAttempt(attempt Attempt) (Grade, error) {
 	var grade Grade
 	err := DB.
-		Where("attempt_instance_id = ? ", attempt.Id).
 		Order("id DESC").
-		First(&grade).
+		First(&grade, Grade{AttemptInstanceId: attempt.Id}).
 		Error
 	if err != nil {
 		return grade, err
@@ -109,9 +112,8 @@ func FindGradeByAttempt(attempt Attempt) (Grade, error) {
 func FindGradeByRunId(runId string) (Grade, error) {
 	var grade Grade
 	err := DB.
-		Where("run_id = ?", runId).
 		Order("id DESC").
-		First(&grade).
+		First(&grade, Grade{RunId: runId}).
 		Error
 
 	if err != nil {
@@ -124,9 +126,8 @@ func FindGradesByMachineProblem(mp MachineProblem) ([]Grade, error) {
 
 	var grades []Grade
 	err := DB.
-		Where("machine_problem_id = ?", mp.Id).
 		Order("id DESC").
-		Find(&grades).
+		Find(&grades, Grade{MachineProblemId: mp.Id}).
 		Error
 
 	if err != nil {
@@ -157,18 +158,17 @@ func FindAllGradesByMachineProblem(mp MachineProblem) ([]Grade, error) {
 func FindGradeByMachineProblem(mp MachineProblem) (Grade, error) {
 	var grade Grade
 	err := DB.
-		Where("machine_problem_id = ?", mp.Id).
 		Order("id DESC").
-		First(&grade).
+		First(&grade, Grade{MachineProblemId: mp.Id}).
 		Error
 	return grade, err
 }
 
 func AllGraded(grade Grade) bool {
-	revel.TRACE.Println(grade.MachineProblemId)
+	//revel.TRACE.Println(grade.MachineProblemId)
 	mp, err := FindMachineProblem(grade.MachineProblemId)
 	if err != nil {
-		revel.TRACE.Println("Cannot find machine problem...")
+		//revel.TRACE.Println("Cannot find machine problem...")
 		return false
 	}
 
@@ -219,6 +219,8 @@ func keywordToDescription(keyword string) string {
 	case "__shared__":
 		return "use shared memory"
 	case "__syncthreads":
+		return "synchronize the threads"
+	case "syncthreads":
 		return "synchronize the threads"
 	case "atomicAdd":
 		return "use atomic operations"
@@ -401,6 +403,48 @@ func UpdateGradePeerReview(user User, mp MachineProblem) (Grade, error) {
 	return grade, err
 }
 
+func UpdateGradeTA(mp MachineProblem, codeGrade int64, inspectionGrade int64, questionsGrade int64, codeComment string, questionsComment string, taCodeText string) (Grade, error) {
+	grade, err := FindGradeByMachineProblem(mp)
+
+	if err != nil {
+		lastAttempt, err := FindLastAttemptByMachineProblem(mp)
+		if err != nil {
+			return grade, errors.New("No attempts for this MP were found")
+		}
+		grade, err = CreateGrade(lastAttempt)
+		if err != nil {
+			return grade, errors.New("Cannot create a new grade.")
+		}
+	} else {
+		grade, err = CopyGrade(grade)
+	}
+
+	if err != nil {
+		return grade, errors.New("Cannot create grade.")
+	}
+
+	grade.CodeScore = codeGrade
+	grade.QuestionsScore = questionsGrade
+	grade.TaGraded = true
+	grade.TaCodeComment = codeComment
+	grade.TaQuestionsComment = questionsComment
+	grade.TaCodeInspectionScore = inspectionGrade
+	grade.TotalScore = codeGrade + questionsGrade + inspectionGrade
+	grade.TaCodeText = taCodeText
+	if grade.TotalScore > 100 {
+		grade.TotalScore = 100
+	}
+
+	if !strings.Contains(grade.DatasetsScored, "(ta)") {
+		grade.DatasetsScored += ",(ta)"
+	}
+
+	grade.Updated = time.Now()
+
+	err = DB.Save(&grade).Error
+	return grade, err
+}
+
 func UpdateCourseraGrade(grade Grade, kind string, score int64) (Grade, error) {
 	grade.Id = 0
 
@@ -412,33 +456,25 @@ func UpdateCourseraGrade(grade Grade, kind string, score int64) (Grade, error) {
 
 	grade.Updated = time.Now()
 
-	revel.TRACE.Println(score)
-
 	err := DB.Save(&grade).Error
 	return grade, err
 }
 
 func RandomGradeByMachineProblem(mpNumber int) (Grade, error) {
 	/*
-	   SELECT grade.id FROM wb.grade
+	   SELECT grade.* FROM wb.grade
 	   INNER JOIN wb.machine_problem mp ON grade.machine_problem_id = mp.id
 	   WHERE mp.number = mpNumber;
 	*/
-	type result struct {
-		Id int64
-	}
-	var res result
+	grade := Grade{}
 	err := DB.
-		Table("grade").
 		Select("grade.id").
 		Joins("inner join machine_problem mp on grade.machine_problem_id = mp.id").
 		Where("mp.number = ?", mpNumber).
 		Order("RAND()").
+		Select("grade.*").
 		Limit(1).
-		Scan(&res).
+		First(&grade).
 		Error
-	if err == nil {
-		return FindGrade(res.Id)
-	}
-	return Grade{}, err
+	return grade, err
 }

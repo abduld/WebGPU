@@ -7,21 +7,25 @@ import (
 )
 
 type PeerReview struct {
-	Id                    int64     `json:"id" qbs:"pk,notnull"`
-	GradeInstanceId       int64     `json:"grade_id" qbs:"fk:Grade"`
-	Reviewer              int64     `json:"reviewer"`
-	CodeReviewScore       int64     `json:"code_review_score"`
-	CodeReviewComment     string    `json:"code_review_comment"`
-	QuestionReviewScore   int64     `json:"question_review_score"`
-	QuestionReviewComment string    `json:"question_review_comment"`
-	Helpful               bool      `json:"helpful"`
-	Reserved1             string    `json:"-"`
-	Reserved2             string    `json:"-"`
-	Reserved3             string    `json:"-"`
-	Reserved4             string    `json:"-"`
-	Reserved5             string    `json:"-"`
-	Updated               time.Time `json:"updated"`
-	Created               time.Time `json:"created"`
+	Id                    int64     `json:"id" gorm:"column:id; primary_key:yes"`
+	GradeInstanceId       int64     `json:"grade_id" gorm:"column:grade_instance_id"`
+	Reviewer              int64     `json:"reviewer" gorm:"column:reviewer"`
+	CodeReviewScore       int64     `json:"code_review_score" gorm:"column:code_review_score"`
+	CodeReviewComment     string    `json:"code_review_comment" gorm:"column:code_review_comment"`
+	QuestionReviewScore   int64     `json:"question_review_score" gorm:"column:question_review_score"`
+	QuestionReviewComment string    `json:"question_review_comment" gorm:"column:question_review_comment"`
+	Helpful               bool      `json:"helpful" gorm:"column:helpful"`
+	Reserved1             string    `json:"-" gorm:"column:reserved1"`
+	Reserved2             string    `json:"-" gorm:"column:reserved2"`
+	Reserved3             string    `json:"-" gorm:"column:reserved3"`
+	Reserved4             string    `json:"-" gorm:"column:reserved4"`
+	Reserved5             string    `json:"-" gorm:"column:reserved5"`
+	Updated               time.Time `json:"updated" gorm:"column:updated"`
+	Created               time.Time `json:"created" gorm:"column:created"`
+}
+
+func (c PeerReview) TableName() string {
+	return "peer_review"
 }
 
 // Create peer review table if it already does not exist (Database Migration)
@@ -41,7 +45,7 @@ func CreatePeerReviewTable() error {
 	return nil
 }
 
-func CreatePeerReview(grade Grade) (PeerReview, error) {
+func NewPeerReview(grade Grade) (PeerReview, error) {
 	pr := PeerReview{
 		GradeInstanceId:       grade.Id,
 		QuestionReviewComment: "",
@@ -66,9 +70,8 @@ func FindPeerReview(id int64) (PeerReview, error) {
 func FindPeerReviewsWithGrade(grade Grade) ([]PeerReview, error) {
 	var prs []PeerReview
 	err := DB.
-		Where("grade_instance_id = ?", grade.Id).
 		Order("id DESC").
-		Find(&prs).
+		Find(&prs, PeerReview{GradeInstanceId: grade.Id}).
 		Error
 	if err != nil {
 		return prs, err
@@ -167,9 +170,8 @@ func GetPeerReviewsByReviewerAndMachineProblem(user User, mp MachineProblem) ([]
 	var prs []PeerReview
 
 	err := DB.
-		Where("reviewer = ?", user.Id).
 		Order("id DESC").
-		Find(&prs).
+		Find(&prs, PeerReview{Reviewer: user.Id}).
 		Error
 
 	if err != nil {
@@ -212,19 +214,18 @@ func NumberOfPeerReviewsByUserAndMachineProblem(user User, mp MachineProblem) in
 }
 
 func GetPeerReviewsByReviewer(user User) ([]PeerReview, error) {
-	var pr []PeerReview
+	var prs []PeerReview
 	err := DB.
-		Where("reviewer = ?", user.Id).
 		Order("id DESC").
-		Find(&pr).
+		Find(&prs, PeerReview{Reviewer: user.Id}).
 		Error
 	if err != nil {
-		return pr, err
-	} else if len(pr) == 0 {
-		return pr, errors.New("Cannot find peer reviews.")
+		return prs, err
+	} else if len(prs) == 0 {
+		return prs, errors.New("Cannot find peer reviews.")
 	}
 
-	return pr, err
+	return prs, err
 }
 
 func UpdatePeerReview(pr PeerReview, codeReviewScore int64, codeReviewComment string,

@@ -16,7 +16,6 @@ Before starting this lab, make sure that:
 
 Edit the code in the code tab to perform the following:
 
-- Create array views from host arrays
 - Allocate device memory using `clCreateBuffer`
 - Host to device data copy using `clEnqueueWriteBuffer`
 - Prepare kernel parameters and launch kernel

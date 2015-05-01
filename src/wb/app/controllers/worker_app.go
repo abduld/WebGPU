@@ -7,7 +7,7 @@ import (
 	. "wb/app/config"
 	"wb/app/server"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 type WorkerApplication struct {

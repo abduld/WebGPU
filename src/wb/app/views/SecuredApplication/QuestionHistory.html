@@ -1,13 +1,12 @@
-{{set . "title" "Question Answer History"}}
-{{template "header.html" .}}
+{{set . "title" "Question Answer History"}} {{template "header.html" .}}
 
 <div class="container">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3>Question {{.number}} Answer History</h3>
-		</div>
-		{{ template "SecuredApplication/_ReadOnlyQuestionsBody.html" . }}	
-	</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Question {{.number}} Answer History</h3>
+        </div>
+        {{ with $show_history := "true" }} {{ template "SecuredApplication/_ReadOnlyQuestionsBody.html" . }} {{ end }}
+    </div>
 </div>
 
 {{template "footer.html" . }}

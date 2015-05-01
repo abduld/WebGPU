@@ -17,7 +17,7 @@ import (
 	"wb/app/stats"
 	. "wb/app/util"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 type SolutionData struct {
@@ -144,7 +144,7 @@ func makeCompileCommand(s *WorkerState) string {
 		return MakeOpenCLCompileCommand(s)
 	case "OpenACC":
 		return MakeOpenACCCompileCommand(s)
-	case "C++AMP":
+	case "CPPAMP":
 		return MakeCPPAMPCompileCommand(s)
 	default:
 		return MakeNVCCCompileCommand(s)

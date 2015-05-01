@@ -16,8 +16,8 @@ convolution filter `M` with an Image `I` is:
 
 ![Equation](http://latex.codecogs.com/png.latex?%5Cfn_jvn%20P_%7Bi%2Cj%2Cc%7D%20%3D%20%5Csum_%7Bx%3D0%7D%5E%7B4%7D%20%5Csum_%7By%3D0%7D%5E%7B4%7D%20I_%7Bi&plus;x-2%2Cj&plus;y-2%2Cc%7D%20M_%7Bx%2Cy%7D)
 
-where `P_{i,j,c}` is the output pixel at position `i,j` at channel `c`, `I_{i,j,c}` is the input pixel at `i,j` on channel `c`
-(channels will always be $3$ for this MP corresponding to the RGB values), and `M_{x,y}` is
+where `P_{i,j,c}` is the output pixel at position `i,j` in channel `c`, `I_{i,j,c}` is the input pixel at `i,j` in channel `c`
+(the number of channels will always be 3 for this MP corresponding to the RGB values), and `M_{x,y}` is
 the mask at position `x,y`.
 
 ## Prerequisites

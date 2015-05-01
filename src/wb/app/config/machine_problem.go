@@ -28,6 +28,7 @@ type MachineProblemConfig struct {
 	Name                      string                        `json:"name"`
 	Week                      int                           `json:"week"`
 	CompileScore              float32                       `json:"compile_score"`
+	QuestionsScore            float32                       `json:"questions_score"`
 	CodeScore                 float32                       `json:"code_score"`
 	PeerReviewScore           float32                       `json:"peer_review_score"`
 	Keywords                  []MachineProblemKeywordConfig `json:"keyword"`

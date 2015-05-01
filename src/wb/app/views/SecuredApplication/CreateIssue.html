@@ -1,62 +1,61 @@
-{{set . "title" "Create Issue"}}
-{{template "header.html" .}}
+{{set . "title" "Create Issue"}} {{template "header.html" .}}
 
 <div class="container">
- <h1>
+    <h1>
     Create New Issue
  </h1>
- <div class="panel panel-default">
-    <div class="panel-body">
-      <form class="form-horizontal container" action="/issue/create" method="post">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal container" action="/issue/create" method="post">
 
-        <div class="form-group">
-          <label for="inputTitle" class="col-lg-2 control-label">Title:</label>
-          <div class="col-lg-10">
-            <input type="inputTitle" class="form-control" name="issue.Title" id="title" placeholder="Title">
-          </div>
+                <div class="form-group">
+                    <label for="inputTitle" class="col-lg-2 control-label">Title:</label>
+                    <div class="col-lg-10">
+                        <input type="inputTitle" class="form-control" name="issue.Title" id="title" placeholder="Title">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="col-lg-2 control-label">Category:</label>
+                    <div class="col-lg-10">
+                        <select class="form-control" name="issue.Category">
+                            <option>Problem Description</option>
+                            <option>Problem Code</option>
+                            <option>Problem Dataset</option>
+                            <option>Grade</option>
+                            <option>Server</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="severity" class="col-lg-2 control-label">Severity:</label>
+                    <div class="col-lg-10">
+                        <select class="form-control" name="issue.Severity">
+                            <option>Low (eg. asthetics or typos)</option>
+                            <option>Medium (eg. impairs usability)</option>
+                            <option>High (eg. incorrect or inconsistent behavior) </option>
+                            <option>Very High (eg. system failure) </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputDescription" class="col-lg-2 control-label">Comment:</label>
+                    <div class="col-lg-10">
+                        <textarea class="form-control" name="issue.Comment" id="description" rows="6" placeholder="Enter a description of the problem. The more details you give the faster we can resolve the issue."></textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-primary btn-lg">Report Issue</button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group">
-          <label for="category" class="col-lg-2 control-label">Category:</label>
-          <div class="col-lg-10">
-            <select class="form-control"name="issue.Category" >
-              <option>Problem Description</option>
-              <option>Problem Code</option>
-              <option>Problem Dataset</option>
-              <option>Grade</option>
-              <option>Server</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="severity" class="col-lg-2 control-label">Severity:</label>
-          <div class="col-lg-10">
-            <select class="form-control" name="issue.Severity">
-              <option>Low (eg. asthetics or typos)</option>
-              <option>Medium (eg. impairs usability)</option>
-              <option>High (eg. incorrect or inconsistent behavior) </option>
-              <option>Very High (eg. system failure) </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="inputDescription" class="col-lg-2 control-label">Comment:</label>
-          <div class="col-lg-10">
-            <textarea class="form-control" name="issue.Comment" id="description" rows="6" placeholder="Enter a description of the problem. The more details you give the faster we can resolve the issue."></textarea> 
-          </div>
-        </div>
-
-
-        <div class="form-group">
-          <div class="col-md-offset-2 col-md-10">
-           <button type="submit" class="btn btn-primary btn-lg">Report Issue</button>
-         </div>
-       </div>
-      </form>
     </div>
-  </div>
 </div>
 
 {{template "footer.html" .}}

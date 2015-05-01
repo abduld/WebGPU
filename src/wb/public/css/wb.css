@@ -57,3 +57,7 @@ code {
 textarea {
   font-family: inherit;
 }
+.modal-dialog {
+  position: fixed;
+}
+

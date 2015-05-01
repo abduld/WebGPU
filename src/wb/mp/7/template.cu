@@ -16,9 +16,9 @@ int main(int argc, char **argv) {
   args = wbArg_read(argc, argv);
 
   wbTime_start(Generic, "Importing data and creating memory on host");
-  hostInput1 = (float *)wbImport(wbArg_getInputFile(args, 0), &inputLength);
-  hostInput2 = (float *)wbImport(wbArg_getInputFile(args, 1), &inputLength);
-  hostOutput = (float *)malloc(inputLength * sizeof(float));
+  hostInput1 = ( float * )wbImport(wbArg_getInputFile(args, 0), &inputLength);
+  hostInput2 = ( float * )wbImport(wbArg_getInputFile(args, 1), &inputLength);
+  hostOutput = ( float * )malloc(inputLength * sizeof(float));
   wbTime_stop(Generic, "Importing data and creating memory on host");
 
   wbLog(TRACE, "The input length is ", inputLength);
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
   wbTime_start(Compute, "Performing CUDA computation");
   //@@ Launch the GPU Kernel here
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   wbTime_stop(Compute, "Performing CUDA computation");
 
   wbTime_start(Copy, "Copying output memory to the CPU");

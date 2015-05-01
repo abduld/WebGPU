@@ -4,9 +4,10 @@
   "name": "List Scan",
   "peer_review_score": 0.0,
 	"code_score": 1.0,
+  "questions_score": 0,
 	"compile_score": 0.0,
-	"coding_deadline": "2014-02-17T23:00:00Z",
-	"peer_review_deadline": "2014-02-20T23:00:00Z",
+	"coding_deadline": "2015-03-11T23:00:00Z",
+	"peer_review_deadline": "2015-03-11T23:00:00Z",
 	"keyword": [
 		{
 			"score": 0.2,
@@ -14,7 +15,7 @@
 		},
 		{
 			"score": 0.2,
-			"data": "__syncthreads"
+			"data": "syncthreads"
 		}
 	],
 	"data": [
@@ -69,6 +70,6 @@
 	],
 	"input_type": "vector",
 	"output_type": "vector",
-	"coursera_code_post_key": "FILLME",
-	"coursera_peer_review_post_key": "FILLME"
+	"coursera_code_post_key": "NsXFqaNQ",
+	"coursera_peer_review_post_key": "NONE"
 }

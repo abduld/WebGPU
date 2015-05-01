@@ -1,6 +1,6 @@
 package config
 
-import "github.com/robfig/revel"
+import "github.com/revel/revel"
 
 var (
 	DatabaseProvider   string
@@ -24,6 +24,8 @@ func InitDatabaseConfig() {
 		":" + port +
 		")/" + database +
 		"?charset=utf8&parseTime=true&loc=Local"
+
+	revel.TRACE.Println("DatabaseSourceName = " + DatabaseSourceName)
 
 	DatabaseName = database
 	DatabaseProvider = provider

@@ -69,7 +69,7 @@ struct seccomp_data {
 
 #ifdef WB_USE_SANDBOX_DEBUG
 
-static const char *syscall_names[1024] = { 0 };
+static const char *syscall_names[1024] = {0};
 
 /* Since this redfines "KILL_PROCESS" into a TRAP for the reporter hook,
  * we want to make sure it stands out in the build as it should not be
@@ -146,27 +146,28 @@ static int wbSandbox_reporter(void) {
 
 static int wbSandbox_filters(void) {
   struct sock_filter filter[] = {
-                           /* Validate architecture. */
-    VALIDATE_ARCHITECTURE, /* Grab the system call number. */
-    EXAMINE_SYSCALL,       /* List allowed syscalls. */
-    ALLOW_SYSCALL(rt_sigreturn),
+      /* Validate architecture. */
+      VALIDATE_ARCHITECTURE, /* Grab the system call number. */
+      EXAMINE_SYSCALL,       /* List allowed syscalls. */
+      ALLOW_SYSCALL(rt_sigreturn),
 #ifdef __NR_sigreturn
-    ALLOW_SYSCALL(sigreturn),
+      ALLOW_SYSCALL(sigreturn),
 #endif
-    ALLOW_SYSCALL(exit_group), ALLOW_SYSCALL(exit), ALLOW_SYSCALL(read),
-    ALLOW_SYSCALL(write),  /* Add more syscalls here. */
-    ALLOW_SYSCALL(fstat), ALLOW_SYSCALL(lstat), ALLOW_SYSCALL(mmap),
-    ALLOW_SYSCALL(rt_sigprocmask), ALLOW_SYSCALL(rt_sigaction),
-    ALLOW_SYSCALL(nanosleep), ALLOW_SYSCALL(open), ALLOW_SYSCALL(close),
-    ALLOW_SYSCALL(lseek), ALLOW_SYSCALL(munmap), ALLOW_SYSCALL(futex),
-    ALLOW_SYSCALL(access), ALLOW_SYSCALL(mprotect),
-    ALLOW_SYSCALL(sched_get_priority_max),
-    ALLOW_SYSCALL(sched_get_priority_min), ALLOW_SYSCALL(geteuid),
-    ALLOW_SYSCALL(ioctl), ALLOW_SYSCALL(uname), ALLOW_SYSCALL(sysinfo),
-    ALLOW_SYSCALL(getrlimit), ALLOW_SYSCALL(brk), ALLOW_SYSCALL(pipe),
-    ALLOW_SYSCALL(fcntl), ALLOW_SYSCALL(clone), ALLOW_SYSCALL(set_robust_list),
-    ALLOW_SYSCALL(select), ALLOW_SYSCALL(mkdir), ALLOW_SYSCALL(stat),
-    ALLOW_SYSCALL(readlink), KILL_PROCESS,
+      ALLOW_SYSCALL(exit_group), ALLOW_SYSCALL(exit), ALLOW_SYSCALL(read),
+      ALLOW_SYSCALL(write), /* Add more syscalls here. */
+      ALLOW_SYSCALL(fstat), ALLOW_SYSCALL(lstat), ALLOW_SYSCALL(mmap),
+      ALLOW_SYSCALL(rt_sigprocmask), ALLOW_SYSCALL(rt_sigaction),
+      ALLOW_SYSCALL(nanosleep), ALLOW_SYSCALL(open), ALLOW_SYSCALL(close),
+      ALLOW_SYSCALL(lseek), ALLOW_SYSCALL(munmap), ALLOW_SYSCALL(futex),
+      ALLOW_SYSCALL(access), ALLOW_SYSCALL(mprotect),
+      ALLOW_SYSCALL(sched_get_priority_max),
+      ALLOW_SYSCALL(sched_get_priority_min), ALLOW_SYSCALL(geteuid),
+      ALLOW_SYSCALL(ioctl), ALLOW_SYSCALL(uname), ALLOW_SYSCALL(sysinfo),
+      ALLOW_SYSCALL(getrlimit), ALLOW_SYSCALL(brk), ALLOW_SYSCALL(pipe),
+      ALLOW_SYSCALL(fcntl), ALLOW_SYSCALL(clone),
+      ALLOW_SYSCALL(set_robust_list), ALLOW_SYSCALL(select),
+      ALLOW_SYSCALL(mkdir), ALLOW_SYSCALL(stat), ALLOW_SYSCALL(readlink),
+      KILL_PROCESS,
   };
   struct sock_fprog prog;
 
@@ -201,9 +202,9 @@ int wbSandbox_new(void) {
   return 0;
 }
 
-#else /* WB_USE_SANDBOX */
+#else  /* WB_USE_SANDBOX */
 int wbSandbox_new(void) {
-  //fprintf(stderr, "Not using sandbox mode.\n");
+  // fprintf(stderr, "Not using sandbox mode.\n");
   return 0;
 }
 #endif /* WB_USE_SANDBOX */

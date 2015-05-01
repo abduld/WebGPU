@@ -1,0 +1,1 @@
+uglifyjs modernizr.2.7.1.js jquery-2.0.3.min.js underscore-min.js jquery.timeago.js bootstrap.min.js bootstrap_growl.min.js codemirror.js clike-hint.js bootbox.min.js spin.min.js jquery.spin.js pollymer.js -o main.min.js --source-map main.min.js.map --source-map-root http://webgpu.com/public -p 5 -c -dead_code=false

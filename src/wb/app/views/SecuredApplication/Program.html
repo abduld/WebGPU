@@ -1,41 +1,39 @@
-{{set . "title" "Program"}}
-{{template "header.html" .}}
+{{set . "title" "Program"}} {{template "header.html" .}}
 
 
 <div class="container">
-  <h1>
+    <h1>
     Program
   </h1>
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
 				Program Code
 			</h3>
-		</div>
-		<div class="panel-body">
-			<div class="row">
-    		<table class="table table-striped">
-			<tbody>
-				<tr>
-					<td>Created:</td>
-					<td>
-						<abbr class="timeago" title="{{ rfc3339 .program.Created }}">
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Created:</td>
+                            <td>
+                                <abbr class="timeago" title="{{ rfc3339 .program.Created }}">
 							{{ .program.Created }}
 						</abbr>
-					</td>
-				</tr>
-			</tbody>
-			</table>
-			</div>
-			<div class="row">
-				<div class="codemirror">
-					<textarea class="readonly code-editor">{{ raw .program.Text }}</textarea>
-				</div>
-			</div>
-		</div>
-	</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="codemirror">
+                    <textarea class="readonly code-editor">{{ raw .program.Text }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 {{template "footer.html" .}}
-

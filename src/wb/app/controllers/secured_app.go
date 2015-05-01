@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -14,8 +15,8 @@ import (
 	"wb/app/server"
 	"wb/app/stats"
 
-	"github.com/nu7hatch/gouuid"
-	"github.com/robfig/revel"
+	gouuid "github.com/nu7hatch/gouuid"
+	"github.com/revel/revel"
 )
 
 type SecuredApplication struct {
@@ -29,6 +30,10 @@ func CheckUser(c0 *revel.Controller) revel.Result {
 		c.Flash.Error("Please login first")
 		return c.Redirect(routes.PublicApplication.Index())
 	}
+	return nil
+}
+func CheckCourseraMode(c *revel.Controller) revel.Result {
+	c.RenderArgs["coursera_mode"] = true // CourseraMode
 	return nil
 }
 
@@ -101,6 +106,11 @@ func machineProblemQuestions(user models.User, mp models.MachineProblem) ([]mode
 	}
 
 	return questionItems, nil
+}
+
+func revertQuestions(user models.User, mp models.MachineProblem) ([]models.QuestionItem, error) {
+	models.CreateQuestions(mp)
+	return machineProblemQuestions(user, mp)
 }
 
 func revertMachineProblemProgram(user models.User, mp models.MachineProblem) (models.Program, error) {
@@ -215,7 +225,6 @@ func attemptFailed(attempt models.Attempt) bool {
 }
 
 func attemptFailedReason(attempt models.Attempt) string {
-	stats.TRACE.Println(attempt.TimeoutError)
 	if attempt.TimeoutError {
 		return "Timeout"
 	} else if attempt.CompilationFailed {
@@ -278,7 +287,7 @@ func attemptAlertTag(attempt models.Attempt) string {
 }
 
 func generateRunId(user models.User) string {
-	u, err := uuid.NewV4()
+	u, err := gouuid.NewV4()
 	if err != nil {
 		stats.ERROR.Println("Cannot generate UUID")
 		return "CannotGenerateRunId"
@@ -340,6 +349,37 @@ func (c SecuredApplication) SubmitProgram(mpNumString string) (res revel.Result)
 	})
 }
 
+func (c SecuredApplication) RevertQuestions(mpNumString string) revel.Result {
+
+	var mp models.MachineProblem
+
+	mpNum, err := strconv.Atoi(mpNumString)
+	if err != nil {
+		c.Flash.Error("Invalid machine problem")
+		return c.Render(routes.PublicApplication.Index())
+	}
+
+	user := c.connected()
+	stats.Incr("App", "ProgramRevert")
+
+	if mp, err = models.FindOrCreateMachineProblemByUser(user, mpNum); err != nil {
+		return c.RenderJson(map[string]interface{}{
+			"status": "error",
+			"data":   "Could not create mp.",
+		})
+	}
+
+	if _, err := revertQuestions(user, mp); err == nil {
+		return c.RenderJson(map[string]interface{}{
+			"status": "success",
+		})
+	} else {
+		return c.RenderJson(map[string]interface{}{
+			"status": "error",
+		})
+	}
+}
+
 func (c SecuredApplication) RevertProgram(mpNumString string) revel.Result {
 
 	var mp models.MachineProblem
@@ -360,10 +400,40 @@ func (c SecuredApplication) RevertProgram(mpNumString string) revel.Result {
 		})
 	}
 
-	if prog, err := revertMachineProblemProgram(user, mp); err == nil {
+	if _, err := revertMachineProblemProgram(user, mp); err == nil {
 		return c.RenderJson(map[string]interface{}{
-			"status":  "success",
-			"program": prog.Text,
+			"status": "success",
+		})
+	} else {
+		return c.RenderJson(map[string]interface{}{
+			"status": "error",
+		})
+	}
+}
+
+func (c SecuredApplication) RevertMachineProblem(mpNumString string) revel.Result {
+
+	var mp models.MachineProblem
+
+	mpNum, err := strconv.Atoi(mpNumString)
+	if err != nil {
+		c.Flash.Error("Invalid machine problem")
+		return c.Render(routes.PublicApplication.Index())
+	}
+
+	user := c.connected()
+	stats.Incr("App", "ProgramRevert")
+
+	if mp, err = models.FindOrCreateMachineProblemByUser(user, mpNum); err != nil {
+		return c.RenderJson(map[string]interface{}{
+			"status": "error",
+			"data":   "Could not create mp.",
+		})
+	}
+
+	if _, err := revertMachineProblemProgram(user, mp); err == nil {
+		return c.RenderJson(map[string]interface{}{
+			"status": "success",
 		})
 	} else {
 		return c.RenderJson(map[string]interface{}{
@@ -799,6 +869,41 @@ func (c SecuredApplication) Grade(gradeIdString string) revel.Result {
 
 	if prog, err := models.FindProgram(attempt.ProgramInstanceId); err == nil {
 		c.RenderArgs["program"] = prog
+
+		conf, _ := ReadMachineProblemConfig(mp.Number)
+		if MachineProblemCodingDeadlineExpiredQ(conf) {
+			bg, err := getBigCodeSuggestion(mp.Number, prog)
+			if err != nil {
+				revel.INFO.Println("Failed to get big code suggestion  :::  ", err)
+			} else if len(bg) != 3 {
+				revel.INFO.Println("The number of suggestions recieved was  :::  ", len(bg), " was expecting 3")
+			} else {
+				//revel.INFO.Println("Got bigcode suggestions")
+				//revel.INFO.Println("min  = ", bg[0])
+				c.RenderArgs["Program"] = prog
+				c.RenderArgs["mp_config"] = conf
+				c.RenderArgs["bigcode"] = bg
+				c.RenderArgs["bigcode_min"] = bg[0]
+				c.RenderArgs["bigcode_max"] = bg[1]
+				c.RenderArgs["bigcode_random"] = bg[2]
+
+				randomSelection := rand.Intn(3)
+				switch randomSelection {
+				case 0:
+					c.RenderArgs["bigcode_min_active"] = "active"
+					c.RenderArgs["bigcode_max_active"] = ""
+					c.RenderArgs["bigcode_random_active"] = ""
+				case 1:
+					c.RenderArgs["bigcode_min_active"] = ""
+					c.RenderArgs["bigcode_max_active"] = "active"
+					c.RenderArgs["bigcode_random_active"] = ""
+				case 2:
+					c.RenderArgs["bigcode_min_active"] = ""
+					c.RenderArgs["bigcode_max_active"] = ""
+					c.RenderArgs["bigcode_random_active"] = "active"
+				}
+			}
+		}
 	}
 
 	if grade.PeerReviewScore > 0 {

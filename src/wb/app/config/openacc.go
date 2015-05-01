@@ -1,12 +1,14 @@
 package config
 
 import (
-	"github.com/robfig/revel"
+	"strings"
+
+	"github.com/revel/revel"
 )
 
 var (
 	PGCCCompilerLocation string
-	PGCCCompiler string
+	PGCCCompiler         string
 )
 
 func findPGCCDirectory() {
@@ -15,14 +17,15 @@ func findPGCCDirectory() {
 	} else {
 		PGCCCompiler = "pgc++"
 	}
-	revel.TRACE.Println("PGCCCompiler = ", PGCCCompiler);
+	revel.TRACE.Println("PGCCCompiler = ", PGCCCompiler)
 	if dir, found := NestedRevelConfig.String("openacc.directory"); found {
-		PGCCCompilerLocation = dir
+		PGCCCompilerLocation = strings.TrimSpace(dir)
 		revel.INFO.Println("Found OpenACC compiler ... ", PGCCCompilerLocation, "/", PGCCCompiler)
 	} else {
 		var err error
 		PGCCCompilerLocation, err = findExe(PGCCCompiler)
 		if err == nil {
+			PGCCCompilerLocation = strings.TrimSpace(PGCCCompilerLocation)
 			revel.INFO.Println("Found OpenACC compiler ... ", PGCCCompilerLocation, "/", PGCCCompiler)
 		}
 	}

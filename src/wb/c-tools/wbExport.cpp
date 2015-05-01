@@ -81,7 +81,6 @@ static inline void wbExportRaw_write(wbExportRaw_t raw, void *data, int rows,
   }
 
   return;
-
 }
 
 static inline void wbExportCSV_setFile(wbExportCSV_t csv, const char *path) {
@@ -102,7 +101,7 @@ static inline void wbExportCSV_setFile(wbExportCSV_t csv, const char *path) {
 static inline wbExportCSV_t wbExportCSV_new(void) {
   wbExportCSV_t csv;
 
-  csv = wbNew(struct st_wbExportCVS_t);
+  csv = wbNew(struct st_wbExportCSV_t);
 
   wbExportCSV_getFile(csv) = NULL;
   wbExportCSV_setColumnCount(csv, -1);
@@ -166,7 +165,6 @@ static inline void wbExportCSV_write(wbExportCSV_t csv, void *data, int rows,
   }
 
   return;
-
 }
 
 static inline wbExport_t wbExport_open(const char *file, wbExportKind_t kind) {
@@ -210,7 +208,7 @@ static inline wbExport_t wbExport_open(const char *file, const char *type0) {
 
   type = wbString_toLower(type0);
 
-  if (wbString_sameQ(type, "cvs")) {
+  if (wbString_sameQ(type, "csv")) {
     kind = wbExportKind_csv;
   } else if (wbString_sameQ(type, "tsv")) {
     kind = wbExportKind_tsv;
@@ -311,8 +309,8 @@ static wbExportKind_t _parseExportExtension(const char *file) {
   return kind;
 }
 
-static
-void wbExport(const char *file, void *data, int rows, int columns, wbType_t type) {
+static void wbExport(const char *file, void *data, int rows, int columns,
+                     wbType_t type) {
   wbExportKind_t kind;
   wbExport_t exprt;
 

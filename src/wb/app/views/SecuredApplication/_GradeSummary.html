@@ -1,122 +1,150 @@
-
 <div class="container">
-  	<h1>
+    <h1>
     	{{.title}}
+    	{{ if eq .grade.TaGraded true }}
+    		<span class="badge">TA Grade</span>
+    	{{ end }}
   	</h1>
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<div class="row">
-				<h3 class="col-md-9">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <h3 class="col-md-9">
 					Grade Summary
 					<a href="/grade/history/{{.mp.Number}}">
 						<small class="text-muted">(History)</small>
 					</a>
-				</h3>
-			    {{ if  eq .user.Reserved1 "" }}
-		        <a href="/coursera/connect">
-		         	<div class="col-md-3 text-right btn btn-lg btn-danger">
-						Connect Account to Coursera
-					</div>
-		        </a>
-		        {{ else }}
-					<div class="col-md-3 text-right btn btn-lg btn-danger submit-coursera-grade-btn" id="{{.grade.Id}}">
-						Submit Grade to Coursera
-					</div>
-			    {{ end }}
-			</div>
-		</div>
-		<div class="panel-body">
-			<div class="row">
-			<table class="table table-striped">
-				<tbody>
-					<tr>
-						<td>Created:</td>
-						<td>
-							<abbr class="timeago" title="{{ rfc3339 .grade.Created }}">
+				</h3> {{ if .coursera_mode }} {{ if eq .user.Reserved1 "" }}
+                <a href="/coursera/connect">
+                    <div class="col-md-3 text-right btn btn-lg btn-danger">
+                        Connect Account to Coursera
+                    </div>
+                </a>
+                {{ else }}
+                <div class="col-md-3 text-right btn btn-lg btn-danger submit-coursera-grade-btn" id="{{.grade.Id}}">
+                    Submit Grade to Coursera
+                </div>
+                {{ end }} {{ end }}
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Created:</td>
+                            <td>
+                                <abbr class="timeago" title="{{ rfc3339 .grade.Created }}">
 								{{ .grade.Created }}
 							</abbr>
-						</td>
-					</tr>
-					<!--
-					<tr>
-						<td>Total Score:</td>
-						<td>
-							{{ .grade.TotalScore }}
-							out of 100 points
-						</td>
-					</tr>
-					-->
-					<tr>
-						<td>Coding Score:</td>
-						<td>
-							{{ .grade.CodeScore }} 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total Score:</td>
+                            <td>
+                                {{ .grade.TotalScore }} out of 100 points
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Coding Score:</td>
+                            <td>
+                                {{ .grade.CodeScore }} out of {{ percentageToInt .grade.CodePercentage }} points {{ if .coursera_mode }}
+                                <a href="#" class="force-submit-coursera-code-grade" id="{{.grade.Id}}"><small class="text-muted">(force code score synchronization to Coursera)</small></a> {{ end }}
+                            </td>
+                        </tr>
+                        {{ if .grade.TaGraded }}
+                        <tr>
+                            <td>Coding Inspection Score:</td>
+                            <td>
+                                {{ .grade.TaCodeInspectionScore }}
+                                <!--
+								out of 
+								{{ percentageToInt .grade.TaCodeInspectionPercentage }}
+								points
+								-->
+                            </td>
+                        </tr>
+                        {{ end }} {{ if .coursera_mode }} {{ if gt .grade.CourseraCodingGrade 0 }}
+                        <tr>
+                            <td>Coding Score on Coursera:</td>
+                            <td>
+                                {{ .grade.CourseraCodingGrade }}
+                                <!--
+								out of 
+								{{ percentageToInt .grade.CodePercentage }}
+								points
+								-->
+                            </td>
+                        </tr>
+                        {{ end }} {{ end }}
+                        <tr>
+                            <td>Questions Score:</td>
+                            <td>
+                                {{ .grade.QuestionsScore }}
+                                <!--
 							out of 
-							{{ percentageToInt .grade.CodePercentage }}
+							{{ percentageToInt .grade.TaCodeInspectionPercentage }}
 							points
-							<a href="#" class="force-submit-coursera-code-grade" id="{{.grade.Id}}"><small class="text-muted">(force code score synchronization to Coursera)</small></a>
-						</td>
-					</tr>
-					{{ if gt .grade.CourseraCodingGrade 0 }}
-					<tr>
-						<td>Coding Score on Coursera:</td>
-						<td>
-							{{ .grade.CourseraCodingGrade }}
-							out of 
-							{{ percentageToInt .grade.CodePercentage }}
-							points
-						</td>
-					</tr>
-					{{ end }}
-					<tr>
-						<td>Peer Review Score:</td>
-						<td>
-							{{ .grade.PeerReviewScore }}
-							out of 
-							{{ percentageToInt .grade.PeerReviewPercentage }}
-							points
-							<a href="#" class="force-submit-coursera-peer-grade" id="{{.grade.Id}}"><small class="text-muted">(force peer review score synchronization to Coursera)</small></a>
-						</td>
-					</tr>
-					{{ if gt .grade.CourseraPeerReviewGrade 0 }}
-					<tr>
-						<td>Peer Review Score on Coursera:</td>
-						<td>
-							{{ .grade.CourseraPeerReviewGrade }}
-							out of 
-							{{ percentageToInt .grade.PeerReviewPercentage }}
-							points
-						</td>
-					</tr>
-					{{ end }}
-				</tbody>
-			</table>
-			</div>
-		</div>
-	</div>
+							-->
+                            </td>
+                        </tr>
+                        {{ if gt .grade.PeerReviewScore 0 }}
+                        <tr>
+                            <td>Peer Review Score:</td>
+                            <td>
+                                {{ .grade.PeerReviewScore }} out of {{ percentageToInt .grade.PeerReviewPercentage }} points
+                                <a href="#" class="force-submit-coursera-peer-grade" id="{{.grade.Id}}"><small class="text-muted">(force peer review score synchronization to Coursera)</small></a>
+                            </td>
+                        </tr>
+                        {{end}} {{ if .coursera_mode }} {{ if gt .grade.CourseraPeerReviewGrade 0 }}
+                        <tr>
+                            <td>Peer Review Score on Coursera:</td>
+                            <td>
+                                {{ .grade.CourseraPeerReviewGrade }} out of {{ percentageToInt .grade.PeerReviewPercentage }} points
+                            </td>
+                        </tr>
+                        {{ end }} {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{ if .reasons }}
 <div class="container">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
 				Point Deduction Reasons
 			</h3>
-		</div>
-		<div class="panel-body">
-			<table class="table table-striped table-hover">
-				<tbody>
-					{{ range .reasons }}
-					<tr>
-						<td>
-							<p> {{.}} </p>
-						</td>
-					</tr>
-					{{ end }}
-				</tbody>
-			</table>
-		</div>
-	</div>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {{ range .reasons }}
+                    <tr>
+                        <td>
+                            <p> {{.}} </p>
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ end }} {{ if ne .grade.TaCodeText "" }}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
+				TA Code Edits
+			</h3>
+        </div>
+        <div class="panel-body">
+            <textarea class="code-editor">{{ raw .grade.TaCodeText }}</textarea>
+        </div>
+    </div>
 </div>
 {{ end }}
 

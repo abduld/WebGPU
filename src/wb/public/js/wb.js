@@ -271,10 +271,99 @@ $(function() {
     return reviews;
   };
 
+  $('.no-bigcode-button')
+    .click(function(elem) {
+      var target = elem.target;
+      var attrs = target.attributes;
+      var user_program_id = attrs["user-program-id"].value;
+      var suggested_program_id = attrs["suggested-program-id"].value;
+      var suggestion_type = attrs["id"].value;
+      var mp_id = parseInt($('.mp-id').attr('id'));
+      $.ajax({
+        type: 'POST',
+        async: false,
+        url: window.domainname + '/bigcode/vote/' + mp_id + "/" + user_program_id + "/" + suggested_program_id + "/" + suggestion_type + "/no",
+        timeout: 60000,
+        success: function(msg) {
+          if (msg.status == 'success') {
+            bootbox.dialog({
+              title: 'Thank you for voting',
+              message: 'The system has successfully logged your vote.',
+              className: 'bootbox-alert',
+              buttons: {
+                ok: {
+                  label: 'Ok',
+                  className: 'btn-success',
+                  callback: function() {
+                    return;
+                  }
+                }
+              }
+            });
+          } else {
+            bootbox.alert({
+              'title': msg.title || 'Error',
+              'message': msg.data || 'Was not able to log your vote.'
+            });
+          }
+        },
+        error: function() {
+          bootbox.alert({
+            'title': 'Error',
+            'message': 'The server was not able to log your vote.'
+          });
+        }
+      });
+    });
+
+  $('.yes-bigcode-button')
+    .click(function(elem) {
+      var target = elem.target;
+      var attrs = target.attributes;
+      var user_program_id = attrs["user-program-id"].value;
+      var suggested_program_id = attrs["suggested-program-id"].value;
+      var suggestion_type = attrs["id"].value;
+      var mp_id = parseInt($('.mp-id').attr('id'));
+      $.ajax({
+        type: 'POST',
+        async: false,
+        url: window.domainname + '/bigcode/vote/' + mp_id + "/" + user_program_id + "/" + suggested_program_id + "/" + suggestion_type + "/yes",
+        timeout: 60000,
+        success: function(msg) {
+          if (msg.status == 'success') {
+            bootbox.dialog({
+              title: 'Thank you for voting',
+              message: 'The system has successfully logged your vote.',
+              className: 'bootbox-alert',
+              buttons: {
+                ok: {
+                  label: 'Ok',
+                  className: 'btn-success',
+                  callback: function() {
+                    return;
+                  }
+                }
+              }
+            });
+          } else {
+            bootbox.alert({
+              'title': msg.title || 'Error',
+              'message': msg.data || 'Was not able to log your vote.'
+            });
+          }
+        },
+        error: function() {
+          bootbox.alert({
+            'title': 'Error',
+            'message': 'The server was not able to log your vote.'
+          });
+        }
+      });
+    });
+
   $('.submit-peer-review')
     .click(function() {
       var mp_id = parseInt($('.mp-id').attr('id'));
-      console.log(collectReviews());
       $.ajax({
         type: 'POST',
         async: false,
@@ -323,5 +412,70 @@ $(function() {
         }
       });
     });
-});
 
+    var collectTAEvaluation = function() {
+     return {
+       'code_score': parseInt($('.code-score').val()),
+       'code_inspection_score': parseInt($('.code-inspection-score').val()),
+       'ta_code_text': parseInt($('.ta-code-text').val()),
+       'code_comment' : $('.code-comment').val(),
+       'questions_score' : parseInt($('.questions-score').val()),
+       'questions_comment': $('.questions-comment').val()
+     }
+    };
+
+    $('.submit-ta-grade')
+      .click(function() {
+        var mp_num = parseInt($('.submit-ta-grade').data('mp-num'));
+        var student_id = parseInt($('.submit-ta-grade').data('student-id'));
+        var data = {
+          mp_num: mp_num,
+          student_id: student_id,
+          grade: JSON.stringify(collectTAEvaluation())
+        };
+        $.ajax({
+          type: 'POST',
+          async: false,
+          url: window.domainname + '/admin/student/' + student_id + '/mp/' + mp_num + '/update',
+          timeout: 60000,
+          dataType: 'json',
+          data: data,
+          success: function(msg) {
+            if (msg.status == 'success') {
+              bootbox.dialog({
+                title: msg.title || 'Grade Updated',
+                message: msg.data || 'The student\'s grade has been updated. Refresh the page to see the changes.',
+                className: 'bootbox-alert',
+                buttons: {
+                  attempt: {
+                    label: 'Show Grade',
+                    className: 'btn-danger',
+                    callback: function() {
+                      window.location.href = msg.link;
+                    }
+                  },
+                  ok: {
+                    label: 'Cancel',
+                    className: 'btn-success',
+                    callback: function() {
+                      return;
+                    }
+                  }
+                }
+              });
+            } else {
+              bootbox.alert({
+                'title': msg.title || 'Error',
+                'message': msg.data || 'Was not able to update the grade.'
+              });
+            }
+          },
+          error: function() {
+            bootbox.alert({
+              'title': 'Error',
+              'message':  'Was not able to update the grade.'
+            });
+          }
+        });
+      });
+});

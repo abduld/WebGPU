@@ -2,13 +2,15 @@ package app
 
 import (
 	"runtime"
+	"wb/app/bigcode"
 	"wb/app/config"
 	"wb/app/controllers"
+	"wb/app/jobs"
 	"wb/app/models"
 	"wb/app/server"
 	"wb/app/stats"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 func init() {
@@ -32,11 +34,11 @@ func init() {
 	revel.OnAppStart(func() {
 		config.InitConfig()
 		stats.InitStats()
-		controllers.InitControllers()
 		models.InitModels()
+		controllers.InitControllers()
 		server.InitServer()
 
-		stats.Incr("Server", "Startup")
-
+		bigcode.InitBigCode()
+		jobs.InitJobs()
 	})
 }

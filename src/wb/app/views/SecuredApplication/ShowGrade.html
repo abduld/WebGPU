@@ -1,23 +1,16 @@
-
-
 {{template "header.html" .}}
-
-
-{{ if not .grade }}
-<div class="container">
-  	<h1>
-    	{{.title}}
-  	</h1>
-	<div class="panel-body">
-		<p class="lead">
-			No grade was submitted for {{.title}} machine problem to the system.
-		</p>
-	</div>
-</div>
+{{ if .grade }}
+  {{ template "SecuredApplication/_ShowGrade.html" . }}
 {{ else }}
-
-{{ template "SecuredApplication/_ShowGrade.html" . }}
-
+  <div class="container">
+      <h1>
+      	{{.title}}
+    	</h1>
+      <div class="panel-body">
+          <p class="lead">
+              No grade was submitted for {{.title}} machine problem to the system.
+          </p>
+      </div>
+  </div>
 {{ end }}
-
 {{template "footer.html" .}}

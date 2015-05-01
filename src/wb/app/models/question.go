@@ -9,32 +9,32 @@ import (
 )
 
 type QuestionItem struct {
-	Id                  int64     `json:"id" qbs:"pk,notnull"`
-	Number              int64     `json:"number"`
-	QuestionsInstanceId int64     `json:"question_id" qbs:"fk:Questions"`
-	QuestionText        string    `json:"question"`
-	Answer              string    `json:"answer qbs:"default:''"`
-	Reserved1           string    `json:"-"`
-	Reserved2           string    `json:"-"`
-	Reserved3           string    `json:"-"`
-	Reserved4           string    `json:"-"`
-	Reserved5           string    `json:"-"`
-	Updated             time.Time `json:"updated"`
-	Created             time.Time `json:"created"`
+	Id                  int64     `json:"id" gorm:"column:id; primary_key:yes"`
+	Number              int64     `json:"number" gorm:"column:number"`
+	QuestionsInstanceId int64     `json:"question_id" gorm:"column:questions_instance_id" sql:"not null"`
+	QuestionText        string    `json:"question" gorm:"column:question_text"`
+	Answer              string    `json:"answer"  gorm:"column:answer" sql:"default:''"`
+	Reserved1           string    `json:"-" gorm:"column:reserved1"`
+	Reserved2           string    `json:"-" gorm:"column:reserved2"`
+	Reserved3           string    `json:"-" gorm:"column:reserved3"`
+	Reserved4           string    `json:"-" gorm:"column:reserved4"`
+	Reserved5           string    `json:"-" gorm:"column:reserved5"`
+	Updated             time.Time `json:"updated" gorm:"column:updated"`
+	Created             time.Time `json:"created" gorm:"column:created"`
 }
 
 var questionsMutexs map[int64]*sync.Mutex = map[int64]*sync.Mutex{}
 
 type Questions struct {
-	Id                       int64     `json:"id" qbs:"pk,notnull"`
-	MachineProblemInstanceId int64     `json:"-" qbs:"fk:machine_problem"`
-	Reserved1                string    `json:"-"`
-	Reserved2                string    `json:"-"`
-	Reserved3                string    `json:"-"`
-	Reserved4                string    `json:"-"`
-	Reserved5                string    `json:"-"`
-	Updated                  time.Time `json:"updated"`
-	Created                  time.Time `json:"created"`
+	Id                       int64     `json:"id" gorm:"column:id; primary_key:yes"`
+	MachineProblemInstanceId int64     `json:"-" gorm:"column:machine_problem_instance_id" sql:"not null"`
+	Reserved1                string    `json:"-" gorm:"column:reserved1"`
+	Reserved2                string    `json:"-" gorm:"column:reserved2"`
+	Reserved3                string    `json:"-" gorm:"column:reserved3"`
+	Reserved4                string    `json:"-" gorm:"column:reserved4"`
+	Reserved5                string    `json:"-" gorm:"column:reserved5"`
+	Updated                  time.Time `json:"updated" gorm:"column:updated"`
+	Created                  time.Time `json:"created" gorm:"column:created"`
 }
 
 func CreateQuestionsTable() error {
@@ -95,10 +95,9 @@ func CreateQuestions(mp MachineProblem) (Questions, error) {
 func FindAllQuestionItems(q Questions) ([]QuestionItem, error) {
 	var qis []QuestionItem
 	err := DB.
-		Where("questions_instance_id = ?", q.Id).
 		Order("updated DESC").
 		Order("number").
-		Find(&qis).
+		Find(&qis, QuestionItem{QuestionsInstanceId: q.Id}).
 		Error
 	if err != nil {
 		return qis, err
@@ -112,9 +111,8 @@ func FindQuestionHistory(q Questions, n int64) ([]QuestionItem, error) {
 
 	var qis []QuestionItem
 	err := DB.
-		Where("questions_instance_id = ? and number = ?", q.Id, n).
 		Order("updated DESC").
-		Find(&qis).
+		Find(&qis, QuestionItem{QuestionsInstanceId: q.Id, Number: n}).
 		Error
 	if err != nil {
 		return qis, err
@@ -202,9 +200,8 @@ func SaveQuestions(mp MachineProblem, qs Questions, answers []string) error {
 func FindQuestions(id int64) (Questions, error) {
 	var questions Questions
 	err := DB.
-		Where("id = ?", id).
 		Order("updated DESC").
-		First(questions).
+		First(questions, id).
 		Error
 	if err != nil {
 		return questions, err
@@ -215,9 +212,8 @@ func FindQuestions(id int64) (Questions, error) {
 func FindQuestionsByMachineProblem(mp MachineProblem) (Questions, error) {
 	var questions Questions
 	err := DB.
-		Where("machine_problem_instance_id = ?", mp.Id).
 		Order("updated DESC").
-		First(&questions).
+		First(&questions, Questions{MachineProblemInstanceId: mp.Id}).
 		Error
 	if err != nil {
 		return questions, err

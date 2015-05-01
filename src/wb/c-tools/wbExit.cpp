@@ -27,13 +27,13 @@ void wb_atExit(void) {
   }
   cout << "}" << endl;
 
-  //wbTimer_delete(_timer);
-  //wbLogger_delete(_logger);
+  // wbTimer_delete(_timer);
+  // wbLogger_delete(_logger);
 
   _timer = NULL;
   _logger = NULL;
 
-//wbFile_atExit();
+// wbFile_atExit();
 
 #ifdef WB_DEBUG_MEMMGR_SUPPORT_STATS
   memmgr_print_stats();
@@ -45,7 +45,7 @@ void wb_atExit(void) {
 
   exit(0);
 
-  //assert(0);
+  // assert(0);
 
   return;
 }

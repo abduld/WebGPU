@@ -14,26 +14,44 @@ GET     /share/:runId                                               PublicApplic
 POST     /compile                                                   WorkerApplication.Compile
 GET      /data/:runIdString                                         WorkerApplication.GetData
 
+# BigCode
+#
+GET      /bigcode/create/:mpNumString                         	    BigCodeApplication.CreateDatabase
+GET      /bigcode/delete/:mpNumString                         	    BigCodeApplication.DeleteDatabase
+GET      /bigcode/load/:mpNumString                           	    BigCodeApplication.LoadDatabase
+GET      /bigcode/closest/:mpNumString/:sig                         BigCodeApplication.ClosestDatabaseEntry
+POST     /bigcode/suggestion/:mpNumString                           BigCodeApplication.GetSuggestion
+POST     /bigcode/vote/:mpNumString/:userProgramIdString/:suggestedProgramIdString/:suggestionType/:yesOrNo                           BigCodeApplication.Vote
+
 # Master
 #
 GET     /workers                                                    MasterApplication.Workers
 POST    /worker/register                                            MasterApplication.WorkerRegister
 POST    /attempt                                                    MasterApplication.Attempt
+GET     /programs/:mpNumString/:countString/:appSecret              MasterApplication.Programs
 
 # Coursera
 #
 GET     /coursera/authenticate                                      CourseraApplication.Authenticate
-GET     /coursera/connect                                           CourseraApplication.Connect
+GET     /coursera/ltiview                                      CourseraApplication.LTIViewAuthentication
+POST    /coursera/ltiauth                                      CourseraApplication.LTIAuthenticate
+GET     /coursera/ltiauth                                      PublicApplication.Index
+# GET     /coursera/connect                                           CourseraApplication.Connect
+GET     /coursera/connect                                      CourseraApplication.LTIViewAuthentication
 GET     /coursera/post_grade/:gradeIdString/:toPostString/:forceString CourseraApplication.PostGrade
 POST    /coursera/post_grade/:gradeIdString/:toPostString/:forceString CourseraApplication.PostGrade
 
 # Server
 #
 
+
+GET     /echo                                                       PublicApplication.Echo
+POST    /echo                                                       PublicApplication.EchoPost
+
 GET     /login                                                      PublicApplication.Login
 POST    /login                                                      PublicApplication.CheckLogin
-GET		/reset_password												PublicApplication.ResetPasswordForm
-POST	/reset_password												PublicApplication.ResetPassword
+GET     /reset_password                                             PublicApplication.ResetPasswordForm
+POST	/reset_password                                             PublicApplication.ResetPassword
 GET		/update_password/:userIdString/:secret						PublicApplication.UpdatePasswordForm
 POST	/update_password/:userIdString/:secret						PublicApplication.UpdatePassword
 GET     /signup                                                     PublicApplication.SignUp
@@ -41,6 +59,7 @@ POST    /signup                                                     PublicApplic
 POST    /user_name_exists                                           PublicApplication.UserNameExists
                     
 GET     /logout                                                     SecuredApplication.Logout
+GET     /user_profile.json                                          SecuredApplication.UserProfile
 
 
 GET     /grades/:mpNumString                                        SecuredApplication.ShowGrade
@@ -53,7 +72,9 @@ GET     /mps                                                        SecuredAppli
 GET     /mp/:mpNumString                                            SecuredApplication.MachineProblem
 POST    /mp/:mpNumString/submit                                     SecuredApplication.SubmitProgram
 POST    /mp/:mpNumString/save                                       SecuredApplication.SaveProgram
-GET     /mp/:mpNumString/revert                                     SecuredApplication.RevertProgram
+GET     /mp/:mpNumString/revert                                     SecuredApplication.RevertMachineProblem
+GET     /mp/:mpNumString/revert_program                             SecuredApplication.RevertProgram
+GET     /mp/:mpNumString/revert_questions                           SecuredApplication.RevertQuestions
 GET     /mp/:mpNumString/program                                    SecuredApplication.RecentProgram
 GET     /mp/:mpNumString/programs/:countString                      SecuredApplication.RecentPrograms
 POST    /mp/:mpNumString/question/save/:questionNumString           SecuredApplication.SaveQuestion
@@ -75,27 +96,43 @@ GET     /dataset/:mpNumString/:name                                 SecuredAppli
 
 GET		/reset_cache 												SecuredApplication.ResetCache
 
+# Server
+#
+
+GET 	 /admin/mp/:mpNumString/:startIdxString/:endIdxString 									AdminApplication.MachineProblemClassRoster
+GET      /admin/all/mp/:mpNumString									AdminApplication.ShowAllStudentsMachineProblems
+GET 	 /admin/student/:studentIdString/mp/:mpNumString 			AdminApplication.ShowStudentMachineProblem
+POST 	 /admin/student/:studentIdString/mp/:mpNumString/update 	AdminApplication.UpdateStudentMachineProblem
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/programs 	AdminApplication.ShowStudentPrograms
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/program/:programIdString 	AdminApplication.ShowStudentProgram
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/attempts 	AdminApplication.ShowStudentAttempts
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/attempt/:attemptIdString 	AdminApplication.ShowStudentAttempt
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/grades 	AdminApplication.ShowStudentGrades
+GET 	 /admin/student/:studentIdString/mp/:mpNumString/grade/:gradeIdString 	AdminApplication.ShowStudentGrade
+GET 	 /admin/mp/:mpNumString/export_csv 							AdminApplication.ExportMachineProblemsGradesToCSV
+
+
 # Ignore favicon requests
+#
+
 GET     /favicon.ico                                                404
 GET     /404                                                        404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                                           Static.Serve("public")
 GET     /help/imgs/*filepath                                        Static.Serve("mp/help/imgs")
-GET     /mp/11/imgs/*filepath                                            Static.Serve("mp/11/imgs")
-
-
-# Dashboard
-GET		/dashboard 													Dashboard.ViewDashboard
-WS      /websocket/dashboard                                        Dashboard.DashboardSocket
+GET     /mp/11/imgs/*filepath                                       Static.Serve("mp/11/imgs")
+GET     /mp/24/imgs/*filepath                                       Static.Serve("mp/24/imgs")
+GET     /mp/99/imgs/*filepath                                       Static.Serve("mp/99/imgs")
 
 
 # Catch all
 # *       /{controller}/{action}                                    {controller}.{action}
 
 # tests
-# module:testrunner
 
 # profile
+module:testrunner
 module:pprof
+module:jobs
 
