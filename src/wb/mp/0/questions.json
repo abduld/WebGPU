@@ -2,8 +2,8 @@
 	"questions": [
 		"What is the compute capability of the NVIDIA Fermi architecture?",
 		"What are the maximum block dimensions for GPUs with 3.0 compute capability?",
-		"Suppose you are launching a one dimensional grid and block. If the hardware's maximum grid dimension is 65535 and the maximum block dimension is 512, what is the maximum number threads can be launched on the GPU?",
-		"Under what conditions might a programmer choose not want to launch the maximum number of threads?",
+		"Suppose you are launching a one dimensional grid and block. If the hardware's maximum grid dimension is 65535 and the maximum block dimension is 512, what is the maximum number of threads that can be launched on the GPU?",
+		"Under what conditions might a programmer choose to not launch the maximum number of threads?",
 		"What can limit a program from launching the maximum number of threads on a GPU?",
 		"What is shared memory?",
 		"What is global memory?",
